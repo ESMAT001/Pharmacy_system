@@ -1,9 +1,9 @@
 import React,{useState,useEffect} from 'react'
-import Navbar from "./navbar";
+import Navbar from "../navbar";
 import {useHistory} from "react-router-dom";
 import axios from 'axios';
-import FormInput from "./FormInput";
-import SubmitBtn from "./SubmitBtn";
+import FormInput from "../FormInput";
+import SubmitBtn from "../SubmitBtn";
 function AddNewInvoice() {
 
     const history=useHistory();

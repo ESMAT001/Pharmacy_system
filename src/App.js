@@ -7,8 +7,8 @@ import "./style.css";
 import AddToPreviousMedicine from "./components/add_to_previous_medicine";
 import AddVisitor from "./components/add_visitor";
 import VisitorList from "./components/visitor_list";
-import AddNewInvoice from "./components/add_new_invoice";
-import AddNewCustomerInvoice from "./components/AddNewCustomerInvoice"
+import AddNewInvoice from "./components/invoice/add_new_invoice";
+import AddNewCustomerInvoice from "./components/invoice/AddNewCustomerInvoice"
 function App() {
   return (
     <>
