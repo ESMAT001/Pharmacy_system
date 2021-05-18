@@ -28,6 +28,9 @@ function AddNewCustomerInvoice() {
     const provinceHandler = (userData) => {
         setProvince(userData);
     }
+
+    const [userId, setUserId] = useState("")
+
     const addCutomerForm = (browser) => {
         browser.preventDefault();
         var formData = new FormData();
@@ -37,10 +40,15 @@ function AddNewCustomerInvoice() {
         formData.append("province", province);
         var dataJson = Object.fromEntries(formData);
         axios.post("http://localhost:8080/pharmacyproject/backend/invoice_module/add_new_invoice.php", dataJson)
-            .then(res => {
+            .then(async (res) => {
+                console.log('response customer')
+                // let resp= JSON.parse(res.data.sql)
+                console.log(res)
                 if (res.data.status === "true") {
                     document.getElementById("Invoice").classList.remove("hidden");
                     document.getElementById("addCustomerSubmitBtn").classList.add("hidden");
+                    setUserId(res.data.id)
+                    getVisitor()
                 } else {
                     console.log(res)
                 }
@@ -81,14 +89,22 @@ function AddNewCustomerInvoice() {
     }
 
 
+    async function getVisitor() {
+        let response = await fetch("http://localhost:8080/pharmacyproject/backend/visitor_module/visitor_list.php")
+        response = await response.json()
+        setVisitorList(response)
+        console.log(response)
+    }
+
     const [MedicineValue, setMedicineValue] = useState("");
     var [sellQuantity, setSellQuantity] = useState("")
     const [sellPrice, setSellPrice] = useState("")
     const [discount, setDiscount] = useState("")
     const [finalPrice, setFinalPrice] = useState(0)
-
+    const [visitorList, setVisitorList] = useState([])
     const [btnDisabled, setBtnDisabled] = useState(true);
-
+    const [bookPageNo, setBookPageNo] = useState("")
+    const [visitor, setVisitor] = useState("")
     const [data, setData] = useState([]);
 
 
@@ -107,8 +123,11 @@ function AddNewCustomerInvoice() {
         e.preventDefault()
         const medInfo = document.getElementById("medicineName").value.split("|")
         const newDataObj = {
-            medicineName: medInfo[0],
-            medicineId: medInfo[1],
+            visitor:visitor,
+            bookPageNo: bookPageNo,
+            userId: userId,
+            medicineName: medInfo[1],
+            medicineId: medInfo[0],
             sellQuantity: sellQuantity,
             sellPrice: sellPrice,
             discount: discount,
@@ -156,6 +175,14 @@ function AddNewCustomerInvoice() {
         setDataArray(prev => prev.filter((el, index) => index !== i))
     }
 
+    async function saveData() {
+
+        axios.post("http://localhost:8080/pharmacyproject/backend/invoice_module/add_all_invoice.php", dataArray)
+            .then(res => {
+                console.log('response')
+                console.log(res.data)
+            })
+    }
 
     return (
         <div>
@@ -184,7 +211,24 @@ function AddNewCustomerInvoice() {
                     </div>
                     <div className="p-2 bg-white shadow-lg rounded-lg text-center mt-5 hidden" id="Invoice">
                         <form>
-                            <input type="text" placeholder="Book Page No" className="p-1 mx-1 focus:outline-none border-2 border-blue-300 rounded-md  w-64 mb-3" required />
+                            <select className="p-1 mx-1 focus:outline-none border-2 border-blue-300 rounded-md  w-54 mb-3" required={true}
+                                value={visitor} onChange={(e) => setVisitor(e.target.value)}>
+                                <option>select visitor</option>
+                                {
+                                    visitorList.length >= 0 && visitorList.map((el, i) => {
+                                        return (
+                                            <option value={el.visitor_id} key={i}>
+                                                {el.name} {el.last_name}
+                                            </option>
+                                        )
+                                    }
+                                    )
+                                }
+                            </select>
+                            <input type="text" placeholder="Book Page No" className="p-1 mx-1 focus:outline-none border-2 border-blue-300 rounded-md  w-64 mb-3" required
+                                value={bookPageNo}
+                                onChange={(e) => setBookPageNo(e.target.value)}
+                            />
                             <br />
                             <div>
                                 <select default={MedicineValue} onChange={medicineHandler} id="medicineName" className="p-1 mx-1 focus:outline-none border-2 border-blue-300 rounded-md  w-54 mb-3" required>
@@ -276,6 +320,9 @@ function AddNewCustomerInvoice() {
                                 }
                             </tbody>
                         </table>}
+                        {
+                            dataArray.length > 0 && <button className="bg-green-400 py-2 px-10 text-white font-semibold" onClick={saveData} >Save</button>
+                        }
                     </div>
                 </div>
 
