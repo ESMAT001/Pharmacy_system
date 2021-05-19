@@ -123,7 +123,7 @@ function AddNewCustomerInvoice() {
         e.preventDefault()
         const medInfo = document.getElementById("medicineName").value.split("|")
         const newDataObj = {
-            visitor:visitor,
+            visitor: visitor,
             bookPageNo: bookPageNo,
             userId: userId,
             medicineName: medInfo[1],
@@ -161,7 +161,7 @@ function AddNewCustomerInvoice() {
         console.log(dataArray)
         console.log(discount, sellPrice)
         if (discount !== "" && sellPrice !== "") {
-            setFinalPrice((parseInt(discount) * parseInt(sellPrice)) / 100)
+            setFinalPrice(sellPrice - ((parseInt(discount) * parseInt(sellPrice)) / 100))
         } else if (discount === "" || sellPrice === "") {
             setFinalPrice(0)
         }
@@ -170,6 +170,15 @@ function AddNewCustomerInvoice() {
         }
 
     }, [discount, sellPrice, sellQuantity, dataArray])
+
+    useEffect(() => {
+        
+        if (parseInt(sellQuantity) >= parseInt(quatityInS)) {
+            console.log(typeof parseInt(quatityInS),"-s")
+            setSellQuantity("")
+        }
+    }, [sellQuantity,quatityInS])
+
 
     function handleDelete(i) {
         setDataArray(prev => prev.filter((el, index) => index !== i))
@@ -238,7 +247,9 @@ function AddNewCustomerInvoice() {
                                 <input type="text" placeholder="Sell quantity" className="p-1 mx-1 focus:outline-none border-2 border-blue-300 rounded-md  w-20 mb-3"
                                     required
                                     value={sellQuantity}
-                                    onChange={e => setSellQuantity(e.target.value)}
+                                    onChange={e => {
+                                        setSellQuantity(e.target.value);
+                                    }}
                                 />
                                 <input type="text" placeholder="Sell Price" className="p-1 mx-1 focus:outline-none border-2 border-blue-300 rounded-md  w-20 mb-3"
                                     required

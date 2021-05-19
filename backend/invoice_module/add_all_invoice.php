@@ -58,38 +58,103 @@ if($con->query($query)===TRUE){
 
      $result = $con->query($query);
 
-     echo json_encode($con->error);
+    //  echo json_encode($con->error);
 
-     $query='';
+    //  lose STOCK
+     $query="";
      for ($i=0; $i <count($data) ; $i++) { 
         $medicineId= $data[$i]['medicineId'];
         $pack_quantity=intval($data[$i]['sellQuantity']);
-        $newQuery= "SELECT packs_quantity , sold_quantity FROM medicine_information_p WHERE medicine_id='$medicineId'";
+        $newQuery= "SELECT quantity , sold_quantity FROM loose_stock_p WHERE medicine_id='$medicineId'";
         $result = $con->query($newQuery);
         $result = $result->fetch_assoc();
-        $resultPacksQuantity= intval($result['packs_quantity']);
+        $resultQuantity= intval($result['quantity']);
         $resultSoldQuantity= intval($result['sold_quantity']);
         $status="";
         $newAmount= $resultSoldQuantity + $pack_quantity;
-        if( $newAmount >= $resultPacksQuantity){
+        if( $newAmount >= $resultQuantity){
             $status = "sold out";
         }else{
             $status = "added";
         }
+        if($pack_quantity <= $resultQuantity){
+            $newAmount= $resultSoldQuantity + $pack_quantity;
+            $query = " UPDATE loose_stock_p SET status='$status' , sold_quantity='$newAmount' WHERE medicine_id='$medicineId' ";
+            $result = $con->query($query);
+            echo json_encode($con->error);
+        }else{
+            $remainQuantity = $resultQuantity - $resultSoldQuantity;
+            $quantityNeededFromMain=$pack_quantity-$remainQuantity;
+            $date=date("Y-m-d");
+            $query= "INSERT INTO loose_stock_p values (default,'$medicineId','$resultQuantity','1','$date','sold out','$date','$resultQuantity')";
+            $con->query($query);
+            echo json_encode($con->error);
 
-        $query = " UPDATE medicine_information_p SET status='$status' , sold_quantity='$newAmount' WHERE medicine_id='$medicineId' ";
-        $result = $con->query($query);
-        echo json_encode($con->error);
-        echo json_encode($result);
+
+            $newQuery= "SELECT packs_quantity , sold_quantity FROM medicine_information_p WHERE medicine_id='$medicineId'";
+            $result = $con->query($newQuery);
+            $result = $result->fetch_assoc();
+            $resultPacksQuantityM= intval($result['packs_quantity']);
+            $resultSoldQuantityM= intval($result['sold_quantity']);
+            $status="";
+            $newAmount = $resultSoldQuantityM + $quantityNeededFromMain;
+            if( $newAmount >= $resultPacksQuantityM){
+                $status = "sold out";
+            }else{
+                $status = "added";
+            }
+
+            $query = " UPDATE medicine_information_p SET status='$status' , sold_quantity='$newAmount' WHERE medicine_id='$medicineId' ";
+            $con->query($query);
+            echo json_encode($con->error);
+            $response=array("status"=>true,"quantity needed"=>$quantityNeededFromMain);
+            echo json_encode($response);
+
+        }
+
+       
+        // echo json_encode($con->error);
+        // echo json_encode($result);
      }
+
+
+
+
+    //  $query='';
+    //  for ($i=0; $i <count($data) ; $i++) { 
+    //     $medicineId= $data[$i]['medicineId'];
+    //     $pack_quantity=intval($data[$i]['sellQuantity']);
+    //     $newQuery= "SELECT packs_quantity , sold_quantity FROM medicine_information_p WHERE medicine_id='$medicineId'";
+    //     $result = $con->query($newQuery);
+    //     $result = $result->fetch_assoc();
+    //     $resultPacksQuantity= intval($result['packs_quantity']);
+    //     $resultSoldQuantity= intval($result['sold_quantity']);
+    //     $status="";
+    //     $newAmount= $resultSoldQuantity + $pack_quantity;
+    //     if( $newAmount >= $resultPacksQuantity){
+    //         $status = "sold out";
+    //     }else{
+    //         $status = "added";
+    //     }
+
+    //     $query = " UPDATE medicine_information_p SET status='$status' , sold_quantity='$newAmount' WHERE medicine_id='$medicineId' ";
+    //     $result = $con->query($query);
+    //     // echo json_encode($con->error);
+    //     // echo json_encode($result);
+    //  }
      
-    
-    // $response=array("status"=>true);
-    // echo json_encode($response);
+    if($con->error===""){
+        $response=array("status"=>true);
+        echo json_encode($response);
+    }else{
+        $response=array("status"=>FALSE);
+        echo json_encode($response);
+    }
+   
     
 }else{
-    // $response=array("status"=>true);
-    // echo json_encode($response);
+    $response=array("status"=>FALSE);
+    echo json_encode($response);
 }
 
 
