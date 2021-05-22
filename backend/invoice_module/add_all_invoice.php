@@ -89,7 +89,8 @@ if($con->query($query)===TRUE){
             $remainQuantity = $resultQuantity - $resultSoldQuantity;
             $quantityNeededFromMain=$pack_quantity-$remainQuantity;
             $date=date("Y-m-d");
-            $query= "INSERT INTO loose_stock_p values (default,'$medicineId','$resultQuantity','1','$date','sold out','$date','$resultQuantity')";
+            $query= "UPDATE loose_stock_p SET quantity='$resultQuantity' , status='sold out', finish_date='$date' , sold_quantity='$resultQuantity' WHERE medicine_id='$medicineId' ";
+            // $query= "INSERT INTO loose_stock_p values (default,'$medicineId','$resultQuantity','1','$date','sold out','$date','$resultQuantity')";
             $con->query($query);
             // echo json_encode($con->error);
 
@@ -112,6 +113,8 @@ if($con->query($query)===TRUE){
             $con->query($query);
             // echo json_encode($con->error);
             // $response=array("status"=>true,"modal"=>TRUE,"quantity needed"=>$quantityNeededFromMain,"medicine_id"=>$medicineId);
+            $query = "INSERT INTO loose_stock_p values (default,'$medicineId','$quantityNeededFromMain','1','$date','sold out','$date','$quantityNeededFromMain')";
+            $con->query($query);
             array_push($response,array("quantity_needed"=>$quantityNeededFromMain,"medicine_id"=>$medicineId));
             // echo json_encode($response);
 
@@ -144,13 +147,16 @@ if($con->query($query)===TRUE){
 
     //     $query = " UPDATE medicine_information_p SET status='$status' , sold_quantity='$newAmount' WHERE medicine_id='$medicineId' ";
     //     $result = $con->query($query);
-    //     // // echo json_encode($con->error);
+        
     //     // echo json_encode($result);
     //  }
-     
+    // echo json_encode("hello");
     if($con->error==="" && $changedQuery){
         // array_unshift($response,array("status"=>true,"modal"=>TRUE));x
         echo json_encode(array("status"=>true,"modal"=>TRUE,"data"=>$response));
+    }else if($con->error==="" ){
+        $response=array("status"=>true,"modal"=>FALSE);
+        echo json_encode($response);
     }else{
         $response=array("status"=>FALSE,"modal"=>FALSE);
         echo json_encode($response);
@@ -158,7 +164,7 @@ if($con->query($query)===TRUE){
    
     
 }else{
-    // echo json_encode($con->error);
+    // echo json_encode("hello");
     $response=array("status"=>FALSE,"modal"=>FALSE);
     echo json_encode($response);
 }
