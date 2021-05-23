@@ -145,7 +145,8 @@ function Navbar() {
                     </div>
                     <div className="hidden" id="invoiceSubMenu">
                         <tr><div className="cursor-pointer pl-4" onClick={()=>history.push("/addnewinvoice")}>Add New Invoice</div></tr>
-                        <tr><div className="cursor-pointer pl-4" onClick={()=>history.push("/invoiceList")}>Invoice List</div></tr>
+                        <tr><div className="cursor-pointer pl-4">Invoice List</div></tr>
+                        <tr><div className="cursor-pointer pl-4">Edit Invoice</div></tr>
                         <tr><div className="cursor-pointer pl-4">Sample Distrubution</div></tr>
                         <tr><div className="cursor-pointer pl-4">Sample Distribution List</div></tr>
                     </div>
@@ -196,7 +197,7 @@ function Navbar() {
                     </tr>
                     </div>
                     <div className="hidden" id="customerSection">
-                        <tr><div className="cursor-pointer pl-4">Customer List</div></tr>
+                        <tr><div className="cursor-pointer pl-4" onClick={()=>history.push("/customerList")}>Customer List</div></tr>
                     </div>
 
 
@@ -213,8 +214,8 @@ function Navbar() {
                     </tr>
                     </div>
                     <div className="hidden" id="stockSection">
-                        <tr><div className="cursor-pointer pl-4">Stock Room View</div></tr>
-                        <tr><div className="cursor-pointer pl-4">Add Medicine to Loose Stock</div></tr>
+                        <tr><div className="cursor-pointer pl-4" onClick={()=>history.push("/stockRoomView")}>Stock Room View</div></tr>
+                        <tr><div className="cursor-pointer pl-4" onClick={()=>history.push("/addtoloosestock")}>Add to Loose Stock</div></tr>
                         <tr><div className="cursor-pointer pl-4">Loose Stock List</div></tr>
                     </div>
 
