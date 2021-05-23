@@ -145,8 +145,7 @@ function Navbar() {
                     </div>
                     <div className="hidden" id="invoiceSubMenu">
                         <tr><div className="cursor-pointer pl-4" onClick={()=>history.push("/addnewinvoice")}>Add New Invoice</div></tr>
-                        <tr><div className="cursor-pointer pl-4">Invoice List</div></tr>
-                        <tr><div className="cursor-pointer pl-4">Edit Invoice</div></tr>
+                        <tr><div className="cursor-pointer pl-4" onClick={()=>history.push("/invoiceList")}>Invoice List</div></tr>
                         <tr><div className="cursor-pointer pl-4">Sample Distrubution</div></tr>
                         <tr><div className="cursor-pointer pl-4">Sample Distribution List</div></tr>
                     </div>

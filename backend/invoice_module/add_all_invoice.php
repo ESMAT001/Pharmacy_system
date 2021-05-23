@@ -38,7 +38,8 @@ $query="INSERT INTO invoice_p(invoice_id,customer_id,book_page_no,user_id,visito
 
 // invoice_medicine_list_id	medicine_id	pack_quantity	sell_price	discount	invoice_id	status
 
-
+$changedQuery=false;
+ 
 if($con->query($query)===TRUE){
     $last_id = $con->insert_id;
     $query = "INSERT INTO invoice_medicine_list_p VALUES ";
@@ -57,16 +58,17 @@ if($con->query($query)===TRUE){
      }
 
      $result = $con->query($query);
-
-    //  echo json_encode($con->error);
+     // echo json_encode($con->error);
 
     //  lose STOCK
      $query="";
+     $response=array();
      for ($i=0; $i <count($data) ; $i++) { 
         $medicineId= $data[$i]['medicineId'];
         $pack_quantity=intval($data[$i]['sellQuantity']);
         $newQuery= "SELECT quantity , sold_quantity FROM loose_stock_p WHERE medicine_id='$medicineId'";
         $result = $con->query($newQuery);
+        // echo json_encode($con->error);
         $result = $result->fetch_assoc();
         $resultQuantity= intval($result['quantity']);
         $resultSoldQuantity= intval($result['sold_quantity']);
@@ -81,18 +83,21 @@ if($con->query($query)===TRUE){
             $newAmount= $resultSoldQuantity + $pack_quantity;
             $query = " UPDATE loose_stock_p SET status='$status' , sold_quantity='$newAmount' WHERE medicine_id='$medicineId' ";
             $result = $con->query($query);
-            echo json_encode($con->error);
+            // echo json_encode($con->error);
         }else{
+            $changedQuery=true;
             $remainQuantity = $resultQuantity - $resultSoldQuantity;
             $quantityNeededFromMain=$pack_quantity-$remainQuantity;
             $date=date("Y-m-d");
-            $query= "INSERT INTO loose_stock_p values (default,'$medicineId','$resultQuantity','1','$date','sold out','$date','$resultQuantity')";
+            $query= "UPDATE loose_stock_p SET quantity='$resultQuantity' , status='sold out', finish_date='$date' , sold_quantity='$resultQuantity' WHERE medicine_id='$medicineId' ";
+            // $query= "INSERT INTO loose_stock_p values (default,'$medicineId','$resultQuantity','1','$date','sold out','$date','$resultQuantity')";
             $con->query($query);
-            echo json_encode($con->error);
+            // echo json_encode($con->error);
 
 
             $newQuery= "SELECT packs_quantity , sold_quantity FROM medicine_information_p WHERE medicine_id='$medicineId'";
             $result = $con->query($newQuery);
+            // echo json_encode($con->error);
             $result = $result->fetch_assoc();
             $resultPacksQuantityM= intval($result['packs_quantity']);
             $resultSoldQuantityM= intval($result['sold_quantity']);
@@ -106,18 +111,21 @@ if($con->query($query)===TRUE){
 
             $query = " UPDATE medicine_information_p SET status='$status' , sold_quantity='$newAmount' WHERE medicine_id='$medicineId' ";
             $con->query($query);
-            echo json_encode($con->error);
-            $response=array("status"=>true,"quantity needed"=>$quantityNeededFromMain);
-            echo json_encode($response);
+            // echo json_encode($con->error);
+            // $response=array("status"=>true,"modal"=>TRUE,"quantity needed"=>$quantityNeededFromMain,"medicine_id"=>$medicineId);
+            $query = "INSERT INTO loose_stock_p values (default,'$medicineId','$quantityNeededFromMain','1','$date','sold out','$date','$quantityNeededFromMain')";
+            $con->query($query);
+            array_push($response,array("quantity_needed"=>$quantityNeededFromMain,"medicine_id"=>$medicineId));
+            // echo json_encode($response);
 
         }
-
        
-        // echo json_encode($con->error);
+       
+        // // echo json_encode($con->error);
         // echo json_encode($result);
      }
 
-
+    // echo json_encode($response);
 
 
     //  $query='';
@@ -139,21 +147,25 @@ if($con->query($query)===TRUE){
 
     //     $query = " UPDATE medicine_information_p SET status='$status' , sold_quantity='$newAmount' WHERE medicine_id='$medicineId' ";
     //     $result = $con->query($query);
-    //     // echo json_encode($con->error);
+        
     //     // echo json_encode($result);
     //  }
-     
-    if($con->error===""){
-        $response=array("status"=>true);
+    // echo json_encode("hello");
+    if($con->error==="" && $changedQuery){
+        // array_unshift($response,array("status"=>true,"modal"=>TRUE));x
+        echo json_encode(array("status"=>true,"modal"=>TRUE,"data"=>$response));
+    }else if($con->error==="" ){
+        $response=array("status"=>true,"modal"=>FALSE);
         echo json_encode($response);
     }else{
-        $response=array("status"=>FALSE);
+        $response=array("status"=>FALSE,"modal"=>FALSE);
         echo json_encode($response);
     }
    
     
 }else{
-    $response=array("status"=>FALSE);
+    // echo json_encode("hello");
+    $response=array("status"=>FALSE,"modal"=>FALSE);
     echo json_encode($response);
 }
 
