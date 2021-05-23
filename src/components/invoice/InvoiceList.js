@@ -30,10 +30,9 @@ function InvoiceList() {
 
   const [invoiceId, setInvoiceId] = useState("");
   useEffect(() => {
-   
-    if (invoiceId !== ""){     
-        getInvoiceData();
-        openModal();
+    if (invoiceId !== "") {
+      getInvoiceData();
+      openModal();
     }
   }, [invoiceId]);
 
@@ -55,9 +54,9 @@ function InvoiceList() {
   }
 
   async function deleteInvoiceInfo(index) {
-      console.log('filter')
+    console.log("filter");
     const arr = modalData.filter((_, i) => i !== index);
-    console.log('filter done')
+    console.log("filter done");
     setModalData(arr);
   }
 
@@ -83,12 +82,12 @@ function InvoiceList() {
   }
   const customStyles = {
     content: {
-      top: "50%",
+      top: "0",
       left: "50%",
       right: "auto",
       bottom: "auto",
       marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
+      transform: "translate(-50%, 0%)",
     },
   };
 
@@ -99,31 +98,43 @@ function InvoiceList() {
         onRequestClose={closeModal}
         style={customStyles}
         contentLabel="Example Modal"
-        className="w-auto p-4 rounded shadow absolute top-0 left-0 bottom-0 right-0 bg-white"
+        className="w-auto p-4 rounded absolute top-0 left-0 bottom-0 right-0 bg-white"
         overlayClassName="fixed top-0 left-0 bottom-0 right-0 bg-black bg-opacity-60"
       >
-        <div className="flex justify-between">
+        <div className="flex justify-between no-print">
           <h2>Medicine data</h2>
+          <div>
+          <button
+            onClick={()=>window.print()}
+            className="py-1 px-2 bg-blue-400 text-white shadow font-semibold focus:outline-none mr-4"
+          >
+           Print
+          </button>
           <button
             onClick={closeModal}
             className="py-1 px-2 bg-red-400 text-white shadow font-semibold"
           >
             Close
           </button>
+          </div>
         </div>
-        {/* p.product_name,ip.invoice_medicine_list_id,ip.pack_quantity,ip.sell_price,ip.discount,ip.status */}
+        <div className="flex flex-row">
+          <div>
+            
+          </div>
+        </div>
         {modalData.length && (
-          <table className="w-full mt-2 text-center">
+          <table className="w-full mt-2 text-center border border-black">
             <thead>
-              <tr className="text-white bg-blue-400  shadow">
-                <td className="py-2 px-2">#</td>
-                <td>Product name</td>
-                <td>pack quantity</td>
-                <td>sell price</td>
-                <td>discount</td>
-                <td></td>
-                <td></td>
-                <td></td>
+              <tr className="text-black font-semibold ">
+                <td className="py-2 px-2 border border-black">#</td>
+                <td className="border px-2 border-black">Product name</td>
+                <td className="border border-black">pack quantity</td>
+                <td className="border border-black">sell price</td>
+                <td className="border border-black">discount</td>
+                <td className="border border-black">total</td>
+                <td className="no-print"></td>
+                <td className="no-print"></td>
               </tr>
             </thead>
             <tbody className="">

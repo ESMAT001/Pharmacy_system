@@ -9,36 +9,41 @@ function InvoiceInfo({ el, i }) {
   return (
     <>
       {
-        show && <tr key={i} className="my-2">
-          <td>{i++}</td>
-          <td>{el.product_name}</td>
-          <td>
+        show && <tr key={i} className="">
+          <td className="border border-black">{++i}</td>
+          <td className="border border-black px-2 ">{el.product_name}</td>
+          <td className="border border-black">
             <input
               type="text"
-              className="px-2 text-center w-3/4 py-1 border border-blue-400 focus:outline-none"
+              className="px-2 text-center  py-1  focus:outline-none"
               value={packQuantity}
               onChange={(e) => setPackQuantity(e.target.value)}
             />
           </td>
-          <td>
+          <td className="border border-black">
             <input
               type="text"
-              className="px-2 text-center w-3/4 py-1 border border-blue-400 focus:outline-none"
+              className="px-2 text-center  py-1  focus:outline-none"
               value={sellPrice}
               onChange={(e) => setSellPrice(e.target.value)}
             />
           </td>
-          <td>
+          <td className="border border-black">
             <input
               type="text"
-              className="px-2 text-center w-3/4 py-1 border border-blue-400 focus:outline-none"
+              className="px-2 text-center  py-1  focus:outline-none"
               value={discount}
               onChange={(e) => setDiscount(e.target.value)}
             />
           </td>
-          <td>
+          <td className="border border-black px-2 text-center">
+            {
+              ((discount*sellPrice)/100)*packQuantity
+            }
+          </td>
+          <td className="no-print">
             <button
-              className="py-1 px-3 bg-green-400 text-white shadow focus:outline-none hover:bg-green-500 transition duration-200"
+              className="py-1 px-3 bg-green-400 text-white shadow focus:outline-none hover:bg-green-500 transition duration-200 "
               // invoice_medicine_list_id
               onClick={() => {
                 axios
@@ -57,9 +62,9 @@ function InvoiceInfo({ el, i }) {
               save
             </button>
           </td>
-          <td>
+          <td className="no-print">
             <button
-              className="py-1 px-3 bg-red-400 text-white shadow focus:outline-none hover:bg-red-500 transition duration-200"
+              className="py-1 px-2 bg-red-400 text-white  focus:outline-none hover:bg-red-500 transition duration-200 "
               onClick={() => {
                 axios
                   .post(
