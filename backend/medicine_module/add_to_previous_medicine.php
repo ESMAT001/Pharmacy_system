@@ -9,7 +9,7 @@ include "../config.php";
 error_reporting(0);
 
 
-$data=mysqli_query($con,"select * from medicine_p");
+$data=mysqli_query($con,"select * from medicine_p as p inner join medicine_information_p as info on info.medicine_id=p.medicine_id where info.status='added'");
 $list=array();
 foreach($data as $da){
     array_push($list[$da['medicine_id']]= $da['product_name']);

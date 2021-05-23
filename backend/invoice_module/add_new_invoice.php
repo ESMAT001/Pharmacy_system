@@ -16,7 +16,12 @@ if(!empty($customer_name)){
 
 $sql="insert into customer_p values(null,'$customer_name','$address','$phone_no','$province',1)";
 if($con->query($sql)===TRUE){
-    $response=array("status"=>"true");
+    $sql= "SELECT customer_id FROM customer_p WHERE customer_name='$customer_name' AND phone_no='$phone_no'";
+    $res= $con->query($sql);
+    foreach($res as $r){
+        $customer_id=$r['customer_id'];
+    }
+    $response=array("status"=>"true",'id'=>$customer_id);
     echo json_encode($response);
     
 }else{
