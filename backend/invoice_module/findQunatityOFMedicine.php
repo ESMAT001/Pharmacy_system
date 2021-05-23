@@ -11,12 +11,10 @@ $medicine_id=$userData['medicineId'];
 include "../config.php";
 
 $remian_medicine=mysqli_query($con,"SELECT sum(packs_quantity)-sum(sold_quantity) as "."remain"." FROM `medicine_information_p` WHERE medicine_id='$medicine_id'");
-$remian_medicine_loose=mysqli_query($con,"SELECT sum(quantity)-sum(sold_quantity) as "."remain"." FROM `loose_stock_p` WHERE medicine_id='$medicine_id' AND status='added' ");
 foreach($remian_medicine as $re){
-    $remain=intval($re['remain']); 
-}
-foreach($remian_medicine_loose as $rel){
-    $remain+=intval($rel['remain']); 
+    $remain=$re['remain'];
+
+   
 }
 
 
