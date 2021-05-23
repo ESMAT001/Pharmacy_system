@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../navbar";
+
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import Modal from "react-modal";
 import InvoiceInfo from "./InvoiceInfo";
+import logo from "../../images/logo.png";
 
 function InvoiceList() {
   const history = useHistory();
@@ -29,6 +30,8 @@ function InvoiceList() {
   }, []);
 
   const [invoiceId, setInvoiceId] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [invoiceDate, setInvoiceDate] = useState("");
   useEffect(() => {
     if (invoiceId !== "") {
       getInvoiceData();
@@ -82,7 +85,7 @@ function InvoiceList() {
   }
   const customStyles = {
     content: {
-      top: "0",
+      top: "0%",
       left: "50%",
       right: "auto",
       bottom: "auto",
@@ -99,40 +102,67 @@ function InvoiceList() {
         style={customStyles}
         contentLabel="Example Modal"
         className="w-auto p-4 rounded absolute top-0 left-0 bottom-0 right-0 bg-white"
-        overlayClassName="fixed top-0 left-0 bottom-0 right-0 bg-black bg-opacity-60"
+        overlayClassName="fixed top-0 left-0 bottom-0 right-0 bg-black bg-opacity-60 overflow-y-scroll"
       >
         <div className="flex justify-between no-print">
           <h2>Medicine data</h2>
           <div>
-          <button
-            onClick={()=>window.print()}
-            className="py-1 px-2 bg-blue-400 text-white shadow font-semibold focus:outline-none mr-4"
-          >
-           Print
-          </button>
-          <button
-            onClick={closeModal}
-            className="py-1 px-2 bg-red-400 text-white shadow font-semibold"
-          >
-            Close
-          </button>
+            <button
+              onClick={() => window.print()}
+              className="py-1 px-2 bg-blue-400 text-white shadow font-semibold focus:outline-none mr-4"
+            >
+              Print
+            </button>
+            <button
+              onClick={closeModal}
+              className="py-1 px-2 bg-red-400 text-white shadow font-semibold"
+            >
+              Close
+            </button>
           </div>
         </div>
-        <div className="flex flex-row">
-          <div>
-            
+        <div className="flex flex-row ">
+          <div className="w-2/5 ">
+            <img src={logo} className="w-2/4 h-4/5 mx-auto" alt="logo" />
           </div>
+          <div className="w-3/5  ">
+            <div className="space-y-4 text-center w-3/4">
+              <p className="text-3xl font-semibold">شرکت صحت زعفران لمیتد</p>
+              <p className="font-semibold">Sehat-E-Zefran Ltd</p>
+              <p className="font-semibold">Saga Laboratories London - UK</p>
+              <p className="font-semibold">(ثبت و راجستر شده وزرات صحت عامه)</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-row justify-between px-2">
+          <p className="font-semibold ">
+            Customer name: <span className="capitalize">{customerName}</span>{" "}
+          </p>
+          <p className="font-semibold">Bill number: {invoiceId} </p>
+          <p className="font-semibold">Date: {invoiceDate} </p>
         </div>
         {modalData.length && (
           <table className="w-full mt-2 text-center border border-black">
             <thead>
-              <tr className="text-black font-semibold ">
-                <td className="py-2 px-2 border border-black">#</td>
-                <td className="border px-2 border-black">Product name</td>
-                <td className="border border-black">pack quantity</td>
-                <td className="border border-black">sell price</td>
-                <td className="border border-black">discount</td>
-                <td className="border border-black">total</td>
+              <tr className="text-black font-semibold w-full">
+                <td className="py-2 px-2 border border-black w-1/12 text-sm">
+                  #
+                </td>
+                <td className="border px-2 border-black w-7/12 text-sm">
+                  Product name
+                </td>
+                <td className="border border-black  w-1/12 text-sm px-8">
+                  quantity
+                </td>
+                <td className="border border-black  w-1/12 text-sm px-8">
+                  price
+                </td>
+                <td className="border border-black  w-1/12 text-sm px-8">
+                  discount
+                </td>
+                <td className="border border-black  w-1/12 text-sm px-8">
+                  total
+                </td>
                 <td className="no-print"></td>
                 <td className="no-print"></td>
               </tr>
@@ -146,7 +176,6 @@ function InvoiceList() {
         )}
       </Modal>
       {document.getElementById("body").classList.add("bg-blue-500")}
-      {/* <Navbar /> */}
       <div className="py-16 px-20 w-full  flex justify-center">
         <div className="p-2 w-full bg-white shadow-lg rounded-lg">
           {data.length && (
@@ -154,8 +183,6 @@ function InvoiceList() {
               <thead>
                 <tr className="text-white bg-blue-400   shadow">
                   <td className=" px-2 py-2">#</td>
-                  <td>id</td>
-                  <td> user id </td>
                   <td>book page number</td>
                   <td> customer name </td>
                   <td> visitor name</td>
@@ -169,11 +196,13 @@ function InvoiceList() {
                     <tr
                       className="cursor-pointer"
                       key={i}
-                      onClick={() => setInvoiceId(el.invoice_id)}
+                      onClick={() => {
+                        setInvoiceId(el.invoice_id);
+                        setCustomerName(el.customer_name);
+                        setInvoiceDate(el.invoice_date);
+                      }}
                     >
-                      <td>{i++}</td>
-                      <td>{el.invoice_id}</td>
-                      <td>{el.user_id}</td>
+                      <td>{++i}</td>
                       <td>{el.book_page_no}</td>
                       <td>{el.customer_name}</td>
                       <td>

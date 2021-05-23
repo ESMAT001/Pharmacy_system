@@ -1,50 +1,61 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 function InvoiceInfo({ el, i }) {
   const [packQuantity, setPackQuantity] = useState(el.pack_quantity);
   const [sellPrice, setSellPrice] = useState(el.sell_price);
   const [discount, setDiscount] = useState(el.discount);
+  
+  function discountAmount(){
+    const val1=((discount * sellPrice * packQuantity)/100).toFixed(2);
+    const val2=sellPrice * packQuantity;
+    return val2-val1;
+  }
+
+
+  const [total, setTotal] = useState(discountAmount());
   const [show, setShow] = useState(true);
+  const [isSaved, setIsSaved] = useState(false);
+  useEffect(() => {
+    setTotal(discountAmount());
+    if (isSaved) setIsSaved(false);
+  }, [sellPrice, discount, packQuantity]);
+
   return (
     <>
-      {
-        show && <tr key={i} className="">
-          <td className="border border-black">{++i}</td>
-          <td className="border border-black px-2 ">{el.product_name}</td>
-          <td className="border border-black">
+      {show && (
+        <tr key={i} className="">
+          <td className="border text-sm border-black">{++i}</td>
+          <td className="border text-sm border-black  ">{el.product_name}</td>
+          <td className="border border-black py-1">
             <input
-              type="text"
-              className="px-2 text-center  py-1  focus:outline-none"
+              type="number"
+              className="px-2 text-center text-sm w-full  mx-auto  py-1  focus:outline-none"
               value={packQuantity}
               onChange={(e) => setPackQuantity(e.target.value)}
             />
           </td>
           <td className="border border-black">
             <input
-              type="text"
-              className="px-2 text-center  py-1  focus:outline-none"
+              type="number"
+              className="px-2 text-center w-full  py-1 text-sm focus:outline-none"
               value={sellPrice}
               onChange={(e) => setSellPrice(e.target.value)}
             />
           </td>
           <td className="border border-black">
             <input
-              type="text"
-              className="px-2 text-center  py-1  focus:outline-none"
+              type="number"
+              className="px-2 py-1 text-center w-full text-sm  mx-auto  focus:outline-none"
               value={discount}
               onChange={(e) => setDiscount(e.target.value)}
             />
           </td>
-          <td className="border border-black px-2 text-center">
-            {
-              ((discount*sellPrice)/100)*packQuantity
-            }
-          </td>
+          <td className="border border-black  text-sm text-center">{total}</td>
           <td className="no-print">
             <button
               className="py-1 px-3 bg-green-400 text-white shadow focus:outline-none hover:bg-green-500 transition duration-200 "
-              // invoice_medicine_list_id
+              disabled={isSaved}
               onClick={() => {
                 axios
                   .post(
@@ -56,7 +67,12 @@ function InvoiceInfo({ el, i }) {
                       discount: discount,
                     }
                   )
-                  .then((res) => console.log(res.data));
+                  .then((res) => {
+                    if (res.data.status) {
+                      setIsSaved(true);
+                      alert("data updated!")
+                    }
+                  });
               }}
             >
               save
@@ -73,7 +89,8 @@ function InvoiceInfo({ el, i }) {
                   )
                   .then((res) => {
                     if (res.data.status) {
-                     setShow(false)
+                      alert("data deleted!")
+                      setShow(false);
                     }
                   });
               }}
@@ -82,7 +99,7 @@ function InvoiceInfo({ el, i }) {
             </button>
           </td>
         </tr>
-      }
+      )}
     </>
   );
 }
