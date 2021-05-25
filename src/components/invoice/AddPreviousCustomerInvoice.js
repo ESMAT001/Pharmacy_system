@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../navbar";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
-import FormInput from "../FormInput";
-import SubmitBtn from "../SubmitBtn";
 import Modal from "react-modal";
 
 function AddPreviousCustomerInvoice() {

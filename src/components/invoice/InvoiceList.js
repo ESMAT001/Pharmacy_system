@@ -103,8 +103,8 @@ function InvoiceList() {
         className="w-auto p-4 rounded absolute top-0 left-0 bottom-0 right-0 bg-white"
         overlayClassName="fixed top-0 left-0 bottom-0 right-0 bg-black bg-opacity-60 overflow-y-scroll"
       >
-        <div className="flex justify-between no-print">
-          <h2>Medicine data</h2>
+        <div className="flex justify-end no-print">
+         
           <div>
             <button
               onClick={() => window.print()}
