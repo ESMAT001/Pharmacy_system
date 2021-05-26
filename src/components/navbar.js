@@ -148,7 +148,7 @@ function Navbar() {
                         <tr><div className="cursor-pointer pl-4" onClick={()=>history.push("/addnewinvoice")}>Add New Invoice</div></tr>
                         <tr><div className="cursor-pointer pl-4" onClick={()=>history.push("/invoiceList")}>Invoice List</div></tr>
                         <tr><div className="cursor-pointer pl-4" onClick={()=>history.push("/sampleDistribution")}>Sample Distrubution</div></tr>
-                        <tr><div className="cursor-pointer pl-4">Sample Distribution List</div></tr>
+                        <tr><div className="cursor-pointer pl-4" onClick={()=>history.push("/sampleDistributionList")}>Sample Distribution List</div></tr>
                     </div>
          {/* End of Invoice Section */}
 
