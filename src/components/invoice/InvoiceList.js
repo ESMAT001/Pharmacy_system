@@ -13,7 +13,7 @@ function InvoiceList() {
   }
 
   const [data, setData] = useState([]);
-
+  const [copyData, setCopyData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       let response = await fetch(
@@ -21,7 +21,9 @@ function InvoiceList() {
       );
       response = await response.json();
       if (response.status) {
+        console.log(response.data)
         setData(response.data);
+        setCopyData(response.data);
       }
       console.log(response);
     };
@@ -80,7 +82,7 @@ function InvoiceList() {
   }
 
   function closeModal() {
-    setTotalBillAmount(0)
+    setTotalBillAmount(0);
     setInvoiceId("");
     setModalData([]);
     setIsOpen(false);
@@ -95,6 +97,20 @@ function InvoiceList() {
       transform: "translate(-50%, 0%)",
     },
   };
+
+  //search
+  const [searchMethod, setSearchMethod] = useState("");
+  const [searchDate, setSearchDate] = useState("");
+  function searchData(e) {
+    e.preventDefault();
+    let arr = copyData.filter((el, i) => {
+      return el["invoice_date"] === searchDate;
+    });
+
+    setData(arr);
+  }
+
+  //end search
 
   return (
     <div>
@@ -194,7 +210,46 @@ function InvoiceList() {
         )}
       </Modal>
       {document.getElementById("body").classList.add("bg-blue-500")}
-      <div className="py-16 px-20 w-full  flex justify-center">
+      <div className="py-16 px-20 w-full  flex flex-col space-y-4 justify-center">
+        <div class=" flex flex-row justify-center">
+          <form
+            className="flex flex-row space-x-4"
+            onSubmit={(e) => searchData(e)}
+          >
+            <select
+                value={searchMethod}
+                onChange={(e) => setSearchMethod(e.target.value)}
+                className="py-1 px-3 focus:outline-none border-2 border-blue-400 rounded"
+              >
+                <option>select search method</option>
+                <option value="name">Search by name</option>
+                <option value="dis_date">Search by date</option>
+              </select>
+
+
+            <input
+              type="date"
+              required={true}
+              placeholder="date"
+              className="border-2 border-blue-400 focus:outline-none py-1 px-3"
+              value={searchDate}
+              onChange={(e) => setSearchDate(e.target.value)}
+            />
+            <button
+              type="submit"
+              className="py-1 px-2 bg-blue-400 text-white shadow font-semibold focus:outline-none"
+            >
+              Search
+            </button>
+            <button
+              type="button"
+              className="py-1 px-2 bg-blue-400 text-white shadow font-semibold focus:outline-none"
+              onClick={() => setData(copyData)}
+            >
+              load all
+            </button>
+          </form>
+        </div>
         <div className="p-2 w-full bg-white shadow-lg rounded-lg">
           {data.length && (
             <table className="text-center w-full">
@@ -202,6 +257,7 @@ function InvoiceList() {
                 <tr className="text-white bg-blue-400   shadow">
                   <td className=" px-2 py-2">#</td>
                   <td>book page number</td>
+                  <td>Province</td>
                   <td> customer name </td>
                   <td> visitor name</td>
                   <td> invoice date </td>
@@ -222,6 +278,7 @@ function InvoiceList() {
                     >
                       <td>{++i}</td>
                       <td>{el.book_page_no}</td>
+                      <td>{el.province}</td>
                       <td>{el.customer_name}</td>
                       <td>
                         {el.name} {el.last_name}

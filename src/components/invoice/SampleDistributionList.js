@@ -22,7 +22,7 @@ function NameOfJsFile() {
     );
     data = await data.json();
     if (data.status) {
-      console.log(data.data);
+      //console.log(data.data);
       setSampleDistributionData(data.data);
       setCopyData(data.data);
     }
@@ -31,7 +31,7 @@ function NameOfJsFile() {
     fetchData();
   }, []);
   useEffect(() => {
-    console.log("loading all");
+    //console.log("loading all");
     fn(fetchData);
   }, [loadAll]);
   //search section
@@ -46,8 +46,10 @@ function NameOfJsFile() {
     const val = productNames["notFOUNDEDEDED"];
     let arr = copyData.filter((el, i) => {
       if (searchMethod === "name") {
-        console.log(el["medicine_id"], val, i);
+        //console.log(el["medicine_id"], val, i);
         return parseInt(el["medicine_id"]) === val;
+      } else if (searchMethod === "dis_date") {
+        return el["dis_date"] === "noDAte";
       }
     });
     setSampleDistributionData(arr);
@@ -59,12 +61,15 @@ function NameOfJsFile() {
   function searchData(e) {
     e.preventDefault();
     fn(() => {
-      console.log("seatch");
+      //console.log("seatch");
       const val = productNames[searchProductName];
       let arr = copyData.filter((el, i) => {
         if (searchMethod === "name") {
-          console.log(el["medicine_id"], val, i);
+          //console.log(el["medicine_id"], val, i);
           return parseInt(el["medicine_id"]) === val;
+        } else if (searchMethod === "dis_date") {
+          //console.log(el["dis_date"],searchDate)
+          return el["dis_date"] === searchDate;
         }
       });
 
@@ -188,7 +193,7 @@ function NameOfJsFile() {
                   />
                   <button
                     type="submit"
-                    className="py-1 px-2 bg-blue-400 text-white shadow font-semibold"
+                    className="py-1 px-2 bg-blue-400 text-white shadow font-semibold focus:outline-none"
                   >
                     Search
                   </button>
@@ -213,7 +218,7 @@ function NameOfJsFile() {
                   />
                   <button
                     type="submit"
-                    className="py-1 px-2 bg-blue-400 text-white shadow font-semibold"
+                    className="py-1 px-2 bg-blue-400 text-white shadow font-semibold focus:outline-none"
                   >
                     Search
                   </button>
@@ -228,7 +233,7 @@ function NameOfJsFile() {
               )}
             </form>
           </div>
-          {sampleDistributionData.length>0 && (
+          {sampleDistributionData.length > 0 && (
             <table className="w-full mt-2 text-center border border-black">
               <thead>
                 <tr className="text-black font-semibold w-full">
@@ -265,14 +270,17 @@ function NameOfJsFile() {
                       i={i}
                       setProductNames={setProductNames}
                       openModal={openModal}
-                     
                     />
                   );
                 })}
               </tbody>
             </table>
           )}
-          {sampleDistributionData.length === 0 && <p>No result!</p>}
+          {sampleDistributionData.length === 0 && (
+            <p className="text-center mt-4 text-red-400 font-semibold">
+              No result!
+            </p>
+          )}
         </div>{" "}
       </div>{" "}
     </div>
