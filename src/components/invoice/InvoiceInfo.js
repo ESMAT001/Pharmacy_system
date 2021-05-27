@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-function InvoiceInfo({ el, i }) {
+function InvoiceInfo({ el, i,setTotalBillAmount }) {
   const [packQuantity, setPackQuantity] = useState(el.pack_quantity);
   const [sellPrice, setSellPrice] = useState(el.sell_price);
   const [discount, setDiscount] = useState(el.discount);
@@ -20,6 +20,11 @@ function InvoiceInfo({ el, i }) {
     setTotal(discountAmount());
     if (isSaved) setIsSaved(false);
   }, [sellPrice, discount, packQuantity]);
+
+  useEffect(() => {
+    setTotalBillAmount(prev=>prev+total)
+  }, [])
+
 
   return (
     <>

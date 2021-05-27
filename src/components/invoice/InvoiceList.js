@@ -55,6 +55,8 @@ function InvoiceList() {
       });
   }
 
+  const [totalBillAmount, setTotalBillAmount] = useState(0);
+
   async function deleteInvoiceInfo(index) {
     console.log("filter");
     const arr = modalData.filter((_, i) => i !== index);
@@ -78,6 +80,7 @@ function InvoiceList() {
   }
 
   function closeModal() {
+    setTotalBillAmount(0)
     setInvoiceId("");
     setModalData([]);
     setIsOpen(false);
@@ -104,7 +107,6 @@ function InvoiceList() {
         overlayClassName="fixed top-0 left-0 bottom-0 right-0 bg-black bg-opacity-60 overflow-y-scroll"
       >
         <div className="flex justify-end no-print">
-         
           <div>
             <button
               onClick={() => window.print()}
@@ -168,8 +170,25 @@ function InvoiceList() {
             </thead>
             <tbody className="">
               {modalData.map((el, i) => {
-                return <InvoiceInfo el={el} i={i} delFn={deleteInvoiceInfo} />;
+                return (
+                  <InvoiceInfo
+                    el={el}
+                    i={i}
+                    delFn={deleteInvoiceInfo}
+                    setTotalBillAmount={setTotalBillAmount}
+                  />
+                );
               })}
+              <tr>
+                <td></td>
+                <td className="border text-sm border-black">TOTAL</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td className="border text-sm border-black">
+                  {totalBillAmount}
+                </td>
+              </tr>
             </tbody>
           </table>
         )}
