@@ -20,9 +20,5 @@ foreach($remian_medicine_loose as $rel){
 }
 
 
-    $response=array("status"=>"true" ,"remain"=>$remain);
+    $response=array("status"=>"true" ,"remain"=>$remain,"medicine_id"=>$medicine_id);
     echo json_encode($response);
-    
-
-
-?>

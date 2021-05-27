@@ -10,7 +10,7 @@ $ids = json_decode(file_get_contents("php://input"),true);
 include "../config.php";
 $data=array();
 for ($i=0; $i < count($ids); $i++) { 
-    $medId=$ids[$i];
+    $medId=intval($ids[$i]);
     $query="SELECT product_name FROM `medicine_p` WHERE medicine_id='$medId'";
     $result = $con->query($query);
     $result = $result->fetch_assoc();

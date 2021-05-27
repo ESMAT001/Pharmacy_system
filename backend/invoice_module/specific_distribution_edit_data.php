@@ -1,39 +1,30 @@
 <?php
+
 header('Access-Control-Allow-Origin: *');
 header('Content-Type:application/json');
 header('Access-Control-Allow-Methods:POST');
 header('Access-Control-Allow-Headers:Access-Control-Allow-Header,Content-Type,Access-Control-Allow-Methods,Authorization,X-Requested-With');
 
-include "../config.php";
+include '../config.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
-//start of sample distribution
-// dis_id	description	medicine_id	quantity	dis_date	total_amount
 
-// description,
-// medicine_name: medInfo[1],
-// medicine_id: medInfo[0],
-// quantity: medicineQuantity,
-// finalPrice: costPriceValue,
+$dis_id = $data[0]["dis_id"];
+$quantity = $data[0]["quantity"];
+$description = $data[0]["description"];
+$date = $data[0]["date"];
+$total = $data[0]["total"];
 
-
-for ($i = 0; $i < count($data); $i++) {
-    $medicineId = $data[$i]['medicine_id'];
-    $quantity = intval($data[$i]['quantity']);
-    $description = $data[$i]["description"];
-    $total_amount = $data[$i]["finalPrice"];
-    $dis_date = date("Y-m-d");
-    $query = "INSERT INTO `sample_distribution_p` VALUES (default,'$description','$medicineId','$quantity','$dis_date','$total_amount')";
-    $con->query($query);
-
-    if ($con->error != "") {
-        echo json_encode($con->error);
-    }
-}
+$query = "SELECT quantity From `sample_distribution_p` WHERE dis_id='$dis_id'";
+$result = $con->query($query);
+$result = $result->fetch_assoc();
+$quantityToCut=$result["quantity"];
 
 
-//end of sample distribution
 
+$query = "UPDATE `sample_distribution_p` SET quantity='$quantity' , description='$description' , dis_date='$date', total_amount='$total' WHERE dis_id='$dis_id' ";
+$con->query($query);
+// echo json_encode($con->error);
 
 
 $query = "";
@@ -92,7 +83,7 @@ for ($i = 0; $i < count($data); $i++) {
         // $response=array("status"=>true,"modal"=>TRUE,"quantity needed"=>$quantityNeededFromMain,"medicine_id"=>$medicineId);
         $query = "INSERT INTO loose_stock_p values (default,'$medicineId','$quantityNeededFromMain','1','$date','sold out','$date','$quantityNeededFromMain')";
         $con->query($query);
-        array_push($response, array("quantity_needed" => $quantityNeededFromMain, "medicine_id" => $medicineId));
+        array_push($response, array("quantity_needed" => $quantityNeededFromMain-$quantityToCut, "medicine_id" => $medicineId));
         // echo json_encode($response);
 
     }
