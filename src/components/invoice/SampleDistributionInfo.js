@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from "react";
+import {useHistory} from "react-router-dom";
 import axios from "axios";
 
-function SampleDistributionInfo({ el, i, openModal, setProductNames ,externalVal}) {
+function SampleDistributionInfo({
+  el,
+  i,
+  openModal,
+  setProductNames,
+  externalVal,
+}) {
+
+  const history =useHistory();
   const [quantity, setQuantity] = useState(el.quantity);
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [description, setDescription] = useState(el.description);
@@ -28,7 +37,7 @@ function SampleDistributionInfo({ el, i, openModal, setProductNames ,externalVal
           setProductName(res.data.data[0].product_name);
           setProductNames((prev) => ({
             ...prev,
-            [res.data.data[0].product_name]:  medicineId,
+            [res.data.data[0].product_name]: medicineId,
           }));
           axios
             .post(
@@ -36,8 +45,7 @@ function SampleDistributionInfo({ el, i, openModal, setProductNames ,externalVal
               medicineId
             )
             .then((res) => {
-              if (res.data.status)
-                setCostPrice(parseInt(res.data.cost_price));
+              if (res.data.status) setCostPrice(parseInt(res.data.cost_price));
             });
 
           axios
@@ -52,7 +60,6 @@ function SampleDistributionInfo({ el, i, openModal, setProductNames ,externalVal
   useEffect(() => {
     getInfo();
   }, []);
-
 
   return (
     <>
@@ -75,9 +82,7 @@ function SampleDistributionInfo({ el, i, openModal, setProductNames ,externalVal
               className="px-2 text-center w-full  py-1 text-sm focus:outline-none"
               value={quantity}
               onChange={(e) => {
-                if (e.target.value <= totalQuantity) {
-                  setQuantity(e.target.value);
-                }
+                setQuantity(e.target.value);
               }}
             />
           </td>
@@ -114,14 +119,18 @@ function SampleDistributionInfo({ el, i, openModal, setProductNames ,externalVal
                       alert("data updated!");
                       if (
                         res.data.modal &&
-                        res.data.data[0].quantity_needed > 0
-                      ) {
+                        res.data.data[0].quantity_needed > 0) {
                         openModal(
                           res.data.data[0].medicine_id,
                           productName,
                           res.data.data[0].quantity_needed
                         );
+                      }else{
+                        window.location.reload(); 
                       }
+                    }else if(res.data.error){
+                      alert(res.data.error);
+                      window.location.reload(); 
                     }
                     console.log(res.data);
                   });

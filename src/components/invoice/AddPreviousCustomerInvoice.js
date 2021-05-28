@@ -126,6 +126,11 @@ function AddPreviousCustomerInvoice() {
 
   function handleAddClick(e) {
     e.preventDefault();
+    console.log(quatityInS,parseInt(sellQuantity));
+    if(parseInt(sellQuantity)>parseInt(quatityInS)){
+      alert("Invalid sell quantity!");
+      return setSellQuantity(0);
+    }
     const medInfo = document.getElementById("medicineName").value.split("|");
     const newDataObj = {
       visitor: visitor,
@@ -317,7 +322,7 @@ function AddPreviousCustomerInvoice() {
 
       <div className="p-16 flex justify-center">
         <div className="flex flex-col">
-          <form className="mx-auto w-96">
+          <form className="mx-auto w-96 ">
             <select
               className="p-1 mx-1 focus:outline-none border-2 border-blue-300 rounded-md  w-full mb-3"
               required={true}
@@ -339,7 +344,7 @@ function AddPreviousCustomerInvoice() {
           </form>
           {userId && (
             <div
-              className="p-2 bg-white shadow-lg rounded-lg text-center mt-5"
+              className="p-6 bg-white shadow-lg rounded-lg text-center mt-5"
               id="Invoice"
             >
               <form>

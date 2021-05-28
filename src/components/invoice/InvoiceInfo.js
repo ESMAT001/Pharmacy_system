@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-function InvoiceInfo({ el, i,setTotalBillAmount }) {
+function InvoiceInfo({ el, i, setTotalBillAmount }) {
   const [packQuantity, setPackQuantity] = useState(el.pack_quantity);
   const [sellPrice, setSellPrice] = useState(el.sell_price);
   const [discount, setDiscount] = useState(el.discount);
-  
-  function discountAmount(){
-    const val1=((discount * sellPrice * packQuantity)/100).toFixed(2);
-    const val2=sellPrice * packQuantity;
-    return val2-val1;
-  }
 
+  function discountAmount() {
+    const val1 = ((discount * sellPrice * packQuantity) / 100).toFixed(2);
+    const val2 = sellPrice * packQuantity;
+    return val2 - val1;
+  }
 
   const [total, setTotal] = useState(discountAmount());
   const [show, setShow] = useState(true);
@@ -22,9 +21,16 @@ function InvoiceInfo({ el, i,setTotalBillAmount }) {
   }, [sellPrice, discount, packQuantity]);
 
   useEffect(() => {
-    setTotalBillAmount(prev=>prev+total)
-  }, [])
+    setTotalBillAmount((prev) => prev + total);
+    axios
+      .post(
+        "http://localhost:8080/pharmacyproject/backend/invoice_module/findQunatityOFMedicine.php",
+        { medicineId: el.medicine_id }
+      )
+      .then((res) => setTotalQuantity(res.data.remain));
+  }, []);
 
+  const [totalQuantity, setTotalQuantity] = useState(0);
 
   return (
     <>
@@ -40,6 +46,7 @@ function InvoiceInfo({ el, i,setTotalBillAmount }) {
               onChange={(e) => setPackQuantity(e.target.value)}
             />
           </td>
+          <td className="no-print border border-black">{totalQuantity}</td>
           <td className="border border-black">
             <input
               type="number"
@@ -75,7 +82,7 @@ function InvoiceInfo({ el, i,setTotalBillAmount }) {
                   .then((res) => {
                     if (res.data.status) {
                       setIsSaved(true);
-                      alert("data updated!")
+                      alert("data updated!");
                     }
                   });
               }}
@@ -94,7 +101,7 @@ function InvoiceInfo({ el, i,setTotalBillAmount }) {
                   )
                   .then((res) => {
                     if (res.data.status) {
-                      alert("data deleted!")
+                      alert("data deleted!");
                       setShow(false);
                     }
                   });

@@ -93,6 +93,7 @@ function NameOfJsFile() {
 
   function closeModal() {
     setIsOpen(false);
+    window.location.reload();  
   }
   const customStyles = {
     content: {

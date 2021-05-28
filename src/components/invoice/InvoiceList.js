@@ -115,7 +115,7 @@ function InvoiceList() {
       val = searchDate;
     }
     let arr = copyData.filter((el, i) => {
-      console.log(el[searchMethod],val)
+      console.log(el[searchMethod], val);
       return el[searchMethod] === val;
     });
 
@@ -123,6 +123,24 @@ function InvoiceList() {
   }
 
   //end search
+
+  function deleteInvoice(id) {
+    axios
+      .post(
+        "http://localhost:8080/pharmacyproject/backend/invoice_module/delete_invoice.php",
+        id
+      )
+      .then((res) => {
+        if (res.data.status) {
+          let arr = copyData.filter((el) => {
+            return el.invoice_id !== id;
+          });
+
+          setData(arr);
+          setCopyData(arr);
+        }
+      });
+  }
 
   return (
     <div>
@@ -183,6 +201,9 @@ function InvoiceList() {
                 <td className="border border-black  w-1/12 text-sm px-8">
                   quantity
                 </td>
+                <td className="no-print border border-black  w-1/12 text-sm px-8">
+                  remaining
+                </td>
                 <td className="border border-black  w-1/12 text-sm px-8">
                   price
                 </td>
@@ -198,6 +219,7 @@ function InvoiceList() {
             </thead>
             <tbody className="">
               {modalData.map((el, i) => {
+                console.log(el)
                 return (
                   <InvoiceInfo
                     el={el}
@@ -210,6 +232,7 @@ function InvoiceList() {
               <tr>
                 <td></td>
                 <td className="border text-sm border-black">TOTAL</td>
+                
                 <td></td>
                 <td></td>
                 <td></td>
@@ -303,9 +326,10 @@ function InvoiceList() {
                   <td> visitor name</td>
                   <td> invoice date </td>
                   <td>total amount</td>
+                  <td></td>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-gray-300">
                 {data.map((el, i) => {
                   return (
                     <tr
@@ -317,7 +341,7 @@ function InvoiceList() {
                         setInvoiceDate(el.invoice_date);
                       }}
                     >
-                      <td>{++i}</td>
+                      <td className=" py-3">{++i}</td>
                       <td>{el.book_page_no}</td>
                       <td>{el.province}</td>
                       <td>{el.customer_name}</td>
@@ -326,17 +350,27 @@ function InvoiceList() {
                       </td>
                       <td>{el.invoice_date}</td>
                       <td>{el.total_amount}</td>
+                      <td>
+                        {" "}
+                        <button
+                          className="px-2 py-1 text-white bg-red-400 shadow shadow focus:outline-none"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteInvoice(el.invoice_id);
+                          }}
+                        >
+                          Delete
+                        </button>{" "}
+                      </td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
           )}
-          {
-            data.length ===0 && <p className="text-red-400 text-center font-semibold">
-              no result!
-            </p>
-          }
+          {data.length === 0 && (
+            <p className="text-red-400 text-center font-semibold">no result!</p>
+          )}
         </div>
       </div>
     </div>

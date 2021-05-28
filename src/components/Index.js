@@ -120,7 +120,7 @@ function Index() {
           <div className="flex flex-row justify-evenly mt-20">
             <div className="bg-white py-4 px-7 rounded shadow-lg">
               <h1 className="font-semibold text-lg text-gray-800">
-                List of medicine which will expire in {rangeE} months.
+                List of medicine which will expire in {rangeE} or less then {rangeE} months.
               </h1>
               <table className="w-full text-center mt-4">
                 <thead>

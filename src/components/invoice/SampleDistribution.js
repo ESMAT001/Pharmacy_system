@@ -67,7 +67,7 @@ function SampleDistribution() {
           medicineId.split("|")[0]
         )
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           if (res.data.status) setCostPrice(res.data.cost_price);
         });
     }
@@ -114,7 +114,7 @@ function SampleDistribution() {
           }
           getSpecificMedicineInfo(medicineIds);
         } else if (res.data.status) {
-          alert("data saved !")
+          alert("data saved !");
           history.push("/sampleDistributionList");
         }
       });
@@ -147,12 +147,14 @@ function SampleDistribution() {
           console.log(remainAmount);
           const newData = [];
           for (let i = 0; i < data.length; i++) {
-            if (data[i].medicine_id === remainAmount[i].medicine_id)
+            if (data[i].medicine_id == remainAmount[i].medicine_id) {
+              console.log("cuptured");
               newData.push({
                 medicine_id: data[i].medicine_id,
                 product_name: data[i].product_name,
                 needed_qunatity: remainAmount[i].quantity_needed,
               });
+            }
           }
           console.log(newData);
           setModalData([...newData]);
