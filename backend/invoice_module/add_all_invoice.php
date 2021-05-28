@@ -113,7 +113,7 @@ if($con->query($query)===TRUE){
             $con->query($query);
             // echo json_encode($con->error);
             // $response=array("status"=>true,"modal"=>TRUE,"quantity needed"=>$quantityNeededFromMain,"medicine_id"=>$medicineId);
-            $query = "INSERT INTO loose_stock_p values (default,'$medicineId','$quantityNeededFromMain','1','$date','sold out','$date','$quantityNeededFromMain')";
+            $query = "INSERT INTO loose_stock_p values (default,'$medicineId','$quantityNeededFromMain','1','$date','sold out','$date','$quantityNeededFromMain','16')";
             $con->query($query);
             array_push($response,array("quantity_needed"=>$quantityNeededFromMain,"medicine_id"=>$medicineId));
             // echo json_encode($response);
@@ -158,7 +158,7 @@ if($con->query($query)===TRUE){
         $response=array("status"=>true,"modal"=>FALSE);
         echo json_encode($response);
     }else{
-        $response=array("status"=>FALSE,"modal"=>FALSE);
+        $response=array("status"=>FALSE,"modal"=>FALSE,"error"=>$con->error);
         echo json_encode($response);
     }
    
@@ -172,7 +172,3 @@ if($con->query($query)===TRUE){
 
 
 // echo json_encode($query);
-
-
-
-?>
