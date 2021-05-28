@@ -21,7 +21,7 @@ function InvoiceList() {
       );
       response = await response.json();
       if (response.status) {
-        console.log(response.data)
+        console.log(response.data);
         setData(response.data);
         setCopyData(response.data);
       }
@@ -101,10 +101,22 @@ function InvoiceList() {
   //search
   const [searchMethod, setSearchMethod] = useState("");
   const [searchDate, setSearchDate] = useState("");
+  const [searchCustomerName, setSearchCustomerName] = useState("");
+  const [searchProvince, setSearchProvince] = useState("");
+
   function searchData(e) {
     e.preventDefault();
+    var val;
+    if (searchMethod === "customer_name") {
+      val = searchCustomerName;
+    } else if (searchMethod === "province") {
+      val = searchProvince;
+    } else if (searchMethod === "invoice_date") {
+      val = searchDate;
+    }
     let arr = copyData.filter((el, i) => {
-      return el["invoice_date"] === searchDate;
+      console.log(el[searchMethod],val)
+      return el[searchMethod] === val;
     });
 
     setData(arr);
@@ -217,41 +229,70 @@ function InvoiceList() {
             onSubmit={(e) => searchData(e)}
           >
             <select
-                value={searchMethod}
-                onChange={(e) => setSearchMethod(e.target.value)}
-                className="py-1 px-3 focus:outline-none border-2 border-blue-400 rounded"
-              >
-                <option>select search method</option>
-                <option value="name">Search by name</option>
-                <option value="dis_date">Search by date</option>
-              </select>
-
-
-            <input
-              type="date"
-              required={true}
-              placeholder="date"
-              className="border-2 border-blue-400 focus:outline-none py-1 px-3"
-              value={searchDate}
-              onChange={(e) => setSearchDate(e.target.value)}
-            />
-            <button
-              type="submit"
-              className="py-1 px-2 bg-blue-400 text-white shadow font-semibold focus:outline-none"
+              value={searchMethod}
+              onChange={(e) => setSearchMethod(e.target.value)}
+              className="py-1 px-3 focus:outline-none border-2 border-blue-400 rounded"
             >
-              Search
-            </button>
-            <button
-              type="button"
-              className="py-1 px-2 bg-blue-400 text-white shadow font-semibold focus:outline-none"
-              onClick={() => setData(copyData)}
-            >
-              load all
-            </button>
+              <option>select search method</option>
+              <option value="customer_name">Search by customer name</option>
+              <option value="province">search by province</option>
+              <option value="invoice_date">Search by date</option>
+            </select>
+
+            {searchMethod === "invoice_date" && (
+              <input
+                type="date"
+                required={true}
+                placeholder="date"
+                className="border-2 border-blue-400 focus:outline-none py-1 px-3"
+                value={searchDate}
+                onChange={(e) => setSearchDate(e.target.value)}
+              />
+            )}
+
+            {searchMethod === "customer_name" && (
+              <input
+                type="text"
+                required={true}
+                placeholder="customer date"
+                className="border-2 border-blue-400 focus:outline-none py-1 px-3"
+                value={searchCustomerName}
+                onChange={(e) => setSearchCustomerName(e.target.value)}
+              />
+            )}
+
+            {searchMethod === "province" && (
+              <input
+                type="text"
+                required={true}
+                placeholder="province"
+                className="border-2 border-blue-400 focus:outline-none py-1 px-3"
+                value={searchProvince}
+                onChange={(e) => setSearchProvince(e.target.value)}
+              />
+            )}
+
+            {searchMethod && (
+              <>
+                <button
+                  type="submit"
+                  className="py-1 px-2 bg-green-400 text-white shadow font-semibold focus:outline-none"
+                >
+                  Search
+                </button>
+                <button
+                  type="button"
+                  className="py-1 px-2 bg-blue-400 text-white shadow font-semibold focus:outline-none"
+                  onClick={() => setData(copyData)}
+                >
+                  load all
+                </button>
+              </>
+            )}
           </form>
         </div>
         <div className="p-2 w-full bg-white shadow-lg rounded-lg">
-          {data.length && (
+          {data.length > 0 && (
             <table className="text-center w-full">
               <thead>
                 <tr className="text-white bg-blue-400   shadow">
@@ -291,6 +332,11 @@ function InvoiceList() {
               </tbody>
             </table>
           )}
+          {
+            data.length ===0 && <p className="text-red-400 text-center font-semibold">
+              no result!
+            </p>
+          }
         </div>
       </div>
     </div>

@@ -209,7 +209,7 @@ function AddPreviousCustomerInvoice() {
           console.log(remainAmount);
           const newData = [];
           for (let i = 0; i < data.length; i++) {
-            if (data[i].medicine_id === remainAmount[i].medicine_id)
+            if (data[i].medicine_id == remainAmount[i].medicine_id)
               newData.push({
                 medicine_id: data[i].medicine_id,
                 product_name: data[i].product_name,
@@ -218,6 +218,7 @@ function AddPreviousCustomerInvoice() {
           }
           console.log(newData);
           setModalData([...newData]);
+        
         }
       });
   }
@@ -301,7 +302,7 @@ function AddPreviousCustomerInvoice() {
                 modalData.map((el, i) => {
                   return (
                     <tr key={el.medicine_id}>
-                      <td className="py-2">{i++}</td>
+                      <td className="py-2">{++i}</td>
                       <td>{el.product_name}</td>
                       <td>{el.needed_qunatity}</td>
                     </tr>

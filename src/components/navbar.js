@@ -114,7 +114,7 @@ function Navbar() {
          <div className="w-full h-12 bg-gray-900 shadow-lg  fixed z-10">
          <div className="flex flex-row justify-between mx-4 mt-1 items-center">
            <div>
-                   <div id="" className="cursor-pointer border border-white rounded-md" onClick={displayMenu}>
+                   <div id="" className="cursor-pointer  rounded-md" onClick={displayMenu}>
                    <div className="burger-icon " id="burger-icon">
                         <div className="icon"></div>
                         <div className="icon"></div>
@@ -130,7 +130,7 @@ function Navbar() {
 
          </div>
 
-            <div className="w-60 p-3 h-full bg-red-200 absolute mt-12 z=0  -left-3/4 " id="aside-menu">
+            <div className="w-60 p-3 h-full bg-gray-600 text-white absolute mt-12 z=0  -left-3/4 transition duration-100" id="aside-menu">
                 <table>
                 <div onClick={()=>history.push("/")}>
                     <h1 className="text-md cursor-pointer font-bold" >Home Page</h1>
