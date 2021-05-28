@@ -10,7 +10,7 @@ include '../config.php';
 $id = json_decode(file_get_contents("php://input"), true);
 
 
-$query = "SELECT p.product_name,ip.invoice_medicine_list_id,ip.pack_quantity,ip.sell_price,ip.discount,ip.status FROM `invoice_medicine_list_p` as ip INNER JOIN `medicine_p` as p on ip.medicine_id=p.medicine_id WHERE invoice_id='$id'";
+$query = "SELECT ip.medicine_id, p.product_name,ip.invoice_medicine_list_id,ip.pack_quantity,ip.sell_price,ip.discount,ip.status FROM `invoice_medicine_list_p` as ip INNER JOIN `medicine_p` as p on ip.medicine_id=p.medicine_id WHERE invoice_id='$id'";
 $result = $con->query($query);
 $data = array();
 if ($result->num_rows > 0) {
