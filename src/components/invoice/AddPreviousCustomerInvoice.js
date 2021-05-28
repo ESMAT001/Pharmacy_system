@@ -63,7 +63,7 @@ function AddPreviousCustomerInvoice() {
   useEffect(() => {
     if (userId !== "") {
       fetchData();
-      getVisitor()
+      getVisitor();
     }
   }, [userId]);
 
@@ -126,8 +126,8 @@ function AddPreviousCustomerInvoice() {
 
   function handleAddClick(e) {
     e.preventDefault();
-    console.log(quatityInS,parseInt(sellQuantity));
-    if(parseInt(sellQuantity)>parseInt(quatityInS)){
+    console.log(quatityInS, parseInt(sellQuantity));
+    if (parseInt(sellQuantity) > parseInt(quatityInS)) {
       alert("Invalid sell quantity!");
       return setSellQuantity(0);
     }
@@ -223,7 +223,6 @@ function AddPreviousCustomerInvoice() {
           }
           console.log(newData);
           setModalData([...newData]);
-        
         }
       });
   }
@@ -248,7 +247,8 @@ function AddPreviousCustomerInvoice() {
           }
           getSpecificMedicineInfo(medicineIds);
         } else if (res.data.status) {
-          console.log("no MODALx");
+          alert("Data saved!");
+          history.push("/invoiceList");
         }
       });
   }
@@ -260,6 +260,7 @@ function AddPreviousCustomerInvoice() {
 
   function closeModal() {
     setIsOpen(false);
+    history.push("/invoiceList");
   }
   const customStyles = {
     content: {

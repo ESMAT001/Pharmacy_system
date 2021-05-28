@@ -65,6 +65,9 @@ function Index() {
   }
 
   const [isSettingOpen, setIssSettingOpen] = useState(false);
+  const [settingMethod, setSettingMethod] = useState("");
+  const [currentPassword,setCurrentPassword]=useState("");
+  const [newPassword,setNewPassword]=useState("");
   return (
     <div>
       {" "}
@@ -72,16 +75,29 @@ function Index() {
       <div className=" ">
         <Navbar />
         <div id="body-content" className="p-16 ">
-          <div className="">
+          <div className=" flex flex-col justify-center">
             {isSettingOpen && (
+              <select
+                value={settingMethod}
+                onChange={(e) => setSettingMethod(e.target.value)}
+                className="focus:outline-none mb-8 p-2 rounded shadow mx-auto"
+              >
+                <option>Select settings</option>
+                <option value="range">Range settings</option>
+                <option value="password">Password settings</option>
+              </select>
+            )}
+            {settingMethod === "range" && (
               <form
                 onSubmit={saveData}
-                className={`flex flex-row w-3/4 mx-auto ${
+                className={`flex flex-row w-4/5 mx-auto ${
                   isSettingOpen ? "bg-white" : ""
                 } transition duration-500 p-4 rounded justify-between shadow-lg`}
               >
-                <label className="flex items-center space-x-4">
-                  <p className="font-semibold text-gray-800">Set quantity Range</p>
+                <label className="flex items-center space-x-2">
+                  <p className="font-semibold text-gray-800">
+                    Set quantity Range
+                  </p>
                   <input
                     type="number"
                     value={rangeQ}
@@ -110,6 +126,43 @@ function Index() {
                 </button>
               </form>
             )}
+            {settingMethod === "password" && (
+              <form
+                onSubmit={saveData}
+                className={`flex flex-row w-4/5 mx-auto ${
+                  isSettingOpen ? "bg-white" : ""
+                } transition duration-500 p-4 rounded justify-between shadow-lg`}
+              >
+                <label className="flex items-center space-x-2">
+                  <p className="font-semibold text-gray-800">
+                    current password
+                  </p>
+                  <input
+                    type="password"
+                    value={currentPassword}
+                    required={true}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    className="border-2 border-blue-400 rounded py-1 px-2 focus:outline-none text-gray-800"
+                  />
+                </label>
+                <label className="flex items-center space-x-4">
+                  <p className="font-semibold text-gray-800">new password</p>
+                  <input
+                    type="number"
+                    value={newPassword}
+                    required={true}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="border-2 border-blue-400 rounded py-1 px-2 focus:outline-none text-gray-800"
+                  />
+                </label>
+                <button
+                  type="submit"
+                  className="text-white bg-green-400 px-5 py-2 font-bold rounded shadow focus:outline-none hover:bg-green-500 transition duration-300"
+                >
+                  Save
+                </button>
+              </form>
+            )}
             <button
               className="focus:outline-none absolute right-12 top-20"
               onClick={() => setIssSettingOpen((prev) => !prev)}
@@ -120,7 +173,8 @@ function Index() {
           <div className="flex flex-row justify-evenly mt-20">
             <div className="bg-white py-4 px-7 rounded shadow-lg">
               <h1 className="font-semibold text-lg text-gray-800">
-                List of medicine which will expire in {rangeE} or less then {rangeE} months.
+                List of medicine which will expire in {rangeE} or less then{" "}
+                {rangeE} months.
               </h1>
               <table className="w-full text-center mt-4">
                 <thead>
@@ -158,7 +212,7 @@ function Index() {
                   </tr>
                 </thead>
                 <tbody className="divide-y-2 divide-gray-200">
-                {quantityData.length &&
+                  {quantityData.length &&
                     quantityData.map((el, i) => {
                       return (
                         <tr key={i}>

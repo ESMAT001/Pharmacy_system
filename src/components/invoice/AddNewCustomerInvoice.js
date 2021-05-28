@@ -114,15 +114,21 @@ function AddNewCustomerInvoice() {
   const [showModal, setShowModal] = useState(false);
 
   const [dataArray, setDataArray] = useState([]);
+  const [quantityIns, setQuantityIns] = useState(0);
 
-  var quatityInS = "";
   async function medicineHandler(e) {
     var fetchQuantity = await QuantityFetcher(e.target.value);
-    console.log(quatityInS);
+    console.log(quantityIns);
   }
 
   function handleAddClick(e) {
     e.preventDefault();
+    console.log("data===", quantityIns);
+    console.log("dat2", sellQuantity);
+    if (parseInt(sellQuantity) > parseInt(quantityIns)) {
+      alert("Invalid sell quantity!");
+      return setSellQuantity(0);
+    }
     const medInfo = document.getElementById("medicineName").value.split("|");
     const newDataObj = {
       visitor: visitor,
@@ -153,7 +159,7 @@ function AddNewCustomerInvoice() {
     );
     if (response.data.status === "true") {
       document.getElementById("quantityInStock").value = response.data.remain;
-      quatityInS = response.data.remain;
+      setQuantityIns(response.data.remain);
     } else {
       console.log(response);
     }
@@ -173,13 +179,6 @@ function AddNewCustomerInvoice() {
       setBtnDisabled(false);
     }
   }, [discount, sellPrice, sellQuantity, dataArray]);
-
-  useEffect(() => {
-    if (parseInt(sellQuantity) >= parseInt(quatityInS)) {
-      console.log(typeof parseInt(quatityInS), "-s");
-      setSellQuantity("");
-    }
-  }, [sellQuantity, quatityInS]);
 
   function handleDelete(i) {
     setDataArray((prev) => prev.filter((el, index) => index !== i));
@@ -206,7 +205,7 @@ function AddNewCustomerInvoice() {
           console.log(remainAmount);
           const newData = [];
           for (let i = 0; i < data.length; i++) {
-            if (data[i].medicine_id === remainAmount[i].medicine_id)
+            if (data[i].medicine_id == remainAmount[i].medicine_id)
               newData.push({
                 medicine_id: data[i].medicine_id,
                 product_name: data[i].product_name,
@@ -240,18 +239,21 @@ function AddNewCustomerInvoice() {
           getSpecificMedicineInfo(medicineIds);
         } else if (res.data.status) {
           console.log("no MODALx");
+          alert("Data saved!");
+          history.push("/invoiceList");
         }
       });
   }
   Modal.setAppElement("#root");
   const [modalIsOpen, setIsOpen] = useState(false);
+
   function openModal() {
     setIsOpen(true);
   }
 
-
   function closeModal() {
     setIsOpen(false);
+    history.push("/invoiceList");
   }
   const customStyles = {
     content: {
@@ -266,7 +268,7 @@ function AddNewCustomerInvoice() {
   return (
     <div>
       <Modal
-        isOpen={modalIsOpen}    
+        isOpen={modalIsOpen}
         onRequestClose={closeModal}
         style={customStyles}
         contentLabel="Example Modal"
@@ -274,18 +276,24 @@ function AddNewCustomerInvoice() {
         overlayClassName="fixed top-0 left-0 bottom-0 right-0 bg-black bg-opacity-60"
       >
         <div className="flex justify-between">
-          <h2>Medicine data</h2>
-          <button onClick={closeModal} className="py-1 px-2 bg-red-400 text-white shadow font-semibold">Close</button>
-        </div>
+          <h2> Medicine data </h2>{" "}
+          <button
+            onClick={closeModal}
+            className="py-1 px-2 bg-red-400 text-white shadow font-semibold"
+          >
+            {" "}
+            Close{" "}
+          </button>{" "}
+        </div>{" "}
         <table className="w-full mt-2 text-center">
           <thead>
             <tr className="text-white bg-blue-400  shadow">
-              <td className="py-2">#</td>
-              <td>Product name</td>
-              <td>Remain quantity</td>
-            </tr>
-          </thead>
+              <td className="py-2"> # </td> <td> Product name </td>{" "}
+              <td> Remain quantity </td>{" "}
+            </tr>{" "}
+          </thead>{" "}
           <tbody>
+            {" "}
             {
               // medicine_id: data[i].medicine_id,
               // product_name: data[i].product_name,
@@ -294,21 +302,21 @@ function AddNewCustomerInvoice() {
                 modalData.map((el, i) => {
                   return (
                     <tr key={el.medicine_id}>
-                      <td className="py-2">{i++}</td>
-                      <td>{el.product_name}</td>
-                      <td>{el.needed_qunatity}</td>
+                      <td className="py-2"> {i++} </td>{" "}
+                      <td> {el.product_name} </td>{" "}
+                      <td> {el.needed_qunatity} </td>{" "}
                     </tr>
                   );
                 })
-            }
-          </tbody>
-        </table>
-      </Modal>
+            }{" "}
+          </tbody>{" "}
+        </table>{" "}
+      </Modal>{" "}
       {document.getElementById("body").classList.add("bg-blue-500")} <Navbar />
       <div className="p-16 flex justify-center">
         <div className="flex flex-col">
           <div className="p-2 bg-white shadow-lg rounded-lg text-center ">
-            <h1 className="font-bold"> Add New Customer </h1>
+            <h1 className="font-bold"> Add New Customer </h1>{" "}
             <form onSubmit={addCutomerForm}>
               <FormInput
                 type="text"
@@ -341,9 +349,9 @@ function AddNewCustomerInvoice() {
                   style="bg-blue-500 p-2 text-white w-64 rounded-md cursor-pointer focus:bg-blue-300 focus:text-blue-600"
                   value="Add Customer"
                 />
-              </div>
-            </form>
-          </div>
+              </div>{" "}
+            </form>{" "}
+          </div>{" "}
           <div
             className="p-2 bg-white shadow-lg rounded-lg text-center mt-5 hidden"
             id="Invoice"
@@ -357,16 +365,17 @@ function AddNewCustomerInvoice() {
                   return setVisitor(e.target.value);
                 }}
               >
-                <option> select visitor </option>
+                <option> select visitor </option>{" "}
                 {visitorList.length >= 0 &&
                   visitorList.map((el, i) => {
                     return (
                       <option value={el.visitor_id} key={i}>
-                        {el.name} {el.last_name}
+                        {" "}
+                        {el.name} {el.last_name}{" "}
                       </option>
                     );
-                  })}
-              </select>
+                  })}{" "}
+              </select>{" "}
               <input
                 type="text"
                 placeholder="Book Page No"
@@ -374,7 +383,7 @@ function AddNewCustomerInvoice() {
                 required
                 value={bookPageNo}
                 onChange={(e) => setBookPageNo(e.target.value)}
-              />
+              />{" "}
               <br />
               <div>
                 <select
@@ -383,15 +392,15 @@ function AddNewCustomerInvoice() {
                   id="medicineName"
                   className="p-1 mx-1 focus:outline-none border-2 border-blue-300 rounded-md  w-54 mb-3"
                   required
-                ></select>
+                ></select>{" "}
                 <input
-                  type="text"
+                  type="number"
                   id="quantityInStock"
                   className="p-1 mx-1 focus:outline-none border-2 border-blue-300 rounded-md  w-16 mb-3"
                   readOnly
                 />
                 <input
-                  type="text"
+                  type="number"
                   placeholder="Sell quantity"
                   className="p-1 mx-1 focus:outline-none border-2 border-blue-300 rounded-md  w-20 mb-3"
                   required
@@ -399,82 +408,83 @@ function AddNewCustomerInvoice() {
                   onChange={(e) => {
                     setSellQuantity(e.target.value);
                   }}
-                />
+                />{" "}
                 <input
-                  type="text"
+                  type="number"
                   placeholder="Sell Price"
                   className="p-1 mx-1 focus:outline-none border-2 border-blue-300 rounded-md  w-20 mb-3"
                   required
                   value={sellPrice}
                   onChange={(e) => setSellPrice(e.target.value)}
-                />
+                />{" "}
                 <input
-                  type="text"
+                  type="number"
                   placeholder="Discount"
                   className="p-1 mx-1 focus:outline-none border-2 border-blue-300 rounded-md  w-20 mb-3"
                   required
                   value={discount}
                   onChange={(e) => setDiscount(e.target.value)}
-                />
+                />{" "}
                 <input
-                  type="text"
+                  type="number"
                   placeholder="Final price"
                   className="p-1 mx-1 focus:outline-none border-2 border-blue-300 rounded-md  w-20 mb-3"
                   readOnly={true}
                   value={finalPrice}
-                />
+                />{" "}
                 <input
                   type="submit"
                   value="Add"
                   className="p-2 bg-blue-400 rounded-lg px-3 text-white focus:outline-none focus:bg-blue-200"
                   onClick={handleAddClick}
                   disabled={btnDisabled}
-                />
-              </div>
-            </form>
+                />{" "}
+              </div>{" "}
+            </form>{" "}
             {dataArray.length !== 0 && (
               <table className="w-full">
                 <thead className="bg-blue-400 text-white font-semibold shadow">
                   <tr>
-                    <td className="py-2"> Medicine name </td>
+                    <td className="py-2"> Medicine name </td>{" "}
                     <td> sell quantity </td> <td>sell price </td>
-                    <td> discount </td> <td>final price </td> <td> </td>
-                  </tr>
-                </thead>
+                    <td> discount </td> <td>final price </td> <td> </td>{" "}
+                  </tr>{" "}
+                </thead>{" "}
                 <tbody className="divide-y-2 divide-blue-300">
+                  {" "}
                   {dataArray.map((el, i) => {
                     return (
                       <tr key={el.medicineId + i}>
-                        <td className="py-3 "> {el.medicineName} </td>
-                        <td className="py-3 "> {el.sellQuantity} </td>
-                        <td className="py-3 "> {el.sellPrice} </td>
-                        <td className="py-3 "> {el.discount} </td>
-                        <td className="py-3 "> {el.finalPrice} </td>
+                        <td className="py-3 "> {el.medicineName} </td>{" "}
+                        <td className="py-3 "> {el.sellQuantity} </td>{" "}
+                        <td className="py-3 "> {el.sellPrice} </td>{" "}
+                        <td className="py-3 "> {el.discount} </td>{" "}
+                        <td className="py-3 "> {el.finalPrice} </td>{" "}
                         <td className="py-3 ">
                           <button
                             className="bg-red-400 text-white font-semibold px-3 py-1 text-center shadow-xl hover:bg-red-500 hover:shadow-xl transition duration-300 focus:outline-none"
                             onClick={() => handleDelete(i)}
                           >
-                            X
-                          </button>
-                        </td>
+                            X{" "}
+                          </button>{" "}
+                        </td>{" "}
                       </tr>
                     );
-                  })}
-                </tbody>
+                  })}{" "}
+                </tbody>{" "}
               </table>
-            )}
+            )}{" "}
             {dataArray.length > 0 && (
               <button
                 className="bg-green-400 py-2 px-10 text-white font-semibold"
                 onClick={saveData}
               >
-                Save
+                Save{" "}
               </button>
-            )}
-          </div>
-        </div>
-      </div>
+            )}{" "}
+          </div>{" "}
+        </div>{" "}
+      </div>{" "}
     </div>
   );
 }
