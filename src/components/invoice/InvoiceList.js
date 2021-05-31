@@ -236,6 +236,7 @@ function InvoiceList() {
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
                 <td className="border text-sm border-black">
                   {totalBillAmount}
                 </td>

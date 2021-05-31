@@ -5,6 +5,8 @@ function InvoiceInfo({ el, i, setTotalBillAmount }) {
   const [packQuantity, setPackQuantity] = useState(el.pack_quantity);
   const [sellPrice, setSellPrice] = useState(el.sell_price);
   const [discount, setDiscount] = useState(el.discount);
+  const [lineThrough, setLineThrough] = useState(el.status === "returned" ? true : false);
+
 
   function discountAmount() {
     const val1 = ((discount * sellPrice * packQuantity) / 100).toFixed(2);
@@ -36,21 +38,21 @@ function InvoiceInfo({ el, i, setTotalBillAmount }) {
     <>
       {show && (
         <tr key={i} className="">
-          <td className="border text-sm border-black">{++i}</td>
-          <td className="border text-sm border-black  ">{el.product_name}</td>
+          <td className={"border text-sm border-black " + (lineThrough ? "line-through" : "")}>{++i}</td>
+          <td className={"border text-sm border-black  " + (lineThrough ? "line-through" : "")}>{el.product_name}</td>
           <td className="border border-black py-1">
             <input
               type="number"
-              className="px-2 text-center text-sm w-full  mx-auto  py-1  focus:outline-none"
+              className={"px-2 text-center text-sm w-full  mx-auto  py-1  focus:outline-none " + (lineThrough ? "line-through" : "")}
               value={packQuantity}
               onChange={(e) => setPackQuantity(e.target.value)}
             />
           </td>
-          <td className="no-print border border-black">{totalQuantity}</td>
+          <td className={"no-print border border-black " + (lineThrough ? "line-through" : "")}>{totalQuantity}</td>
           <td className="border border-black">
             <input
               type="number"
-              className="px-2 text-center w-full  py-1 text-sm focus:outline-none"
+              className={"px-2 text-center w-full  py-1 text-sm focus:outline-none " + (lineThrough ? "line-through" : "")}
               value={sellPrice}
               onChange={(e) => setSellPrice(e.target.value)}
             />
@@ -58,12 +60,12 @@ function InvoiceInfo({ el, i, setTotalBillAmount }) {
           <td className="border border-black">
             <input
               type="number"
-              className="px-2 py-1 text-center w-full text-sm  mx-auto  focus:outline-none"
+              className={"px-2 py-1 text-center w-full text-sm  mx-auto  focus:outline-none " + (lineThrough ? "line-through" : "")}
               value={discount}
               onChange={(e) => setDiscount(e.target.value)}
             />
           </td>
-          <td className="border border-black  text-sm text-center">{total}</td>
+          <td className={"border border-black  text-sm text-center " + (lineThrough ? "line-through" : "")}>{total}</td>
           <td className="no-print">
             <button
               className="py-1 px-3 bg-green-400 text-white shadow focus:outline-none hover:bg-green-500 transition duration-200 "
@@ -93,21 +95,27 @@ function InvoiceInfo({ el, i, setTotalBillAmount }) {
           <td className="no-print">
             <button
               className="py-1 px-2 bg-red-400 text-white  focus:outline-none hover:bg-red-500 transition duration-200 "
+              disabled={
+                lineThrough
+              }
               onClick={() => {
                 axios
                   .post(
-                    "http://localhost:8080/pharmacyproject/backend/invoice_module/specific_invoice_delete_data.php",
+                    "http://localhost:8080/pharmacyproject/backend/invoice_module/specific_invoice_return.php",
                     el.invoice_medicine_list_id
                   )
                   .then((res) => {
                     if (res.data.status) {
-                      alert("data deleted!");
-                      setShow(false);
+                      alert("data returned!");
+                      // setShow(false);
+                      setLineThrough(true);
+                    } else {
+                      console.log(res.data)
                     }
                   });
               }}
             >
-              delete
+              {lineThrough ? "returned" : "return"}
             </button>
           </td>
         </tr>
