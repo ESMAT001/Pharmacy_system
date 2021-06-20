@@ -43,7 +43,31 @@ function Index() {
           method: "quantity",
         }
       )
-      .then((res) => setQuantityData(res.data.data));
+      .then((res) => {
+
+        const count = res.data.data
+        const medicineNames = []
+        for (let index = 0; index < count.length; index++) {
+          if (medicineNames.indexOf(count[index].name) === -1) medicineNames.push(count[index].name);
+        }
+
+        for (let index = 0; index < medicineNames.length; index++) {
+          let medicineCount = 0;
+          for (let j = 0; j < count.length; j++) {
+            if (count[j].name === medicineNames[index]) {
+              medicineCount += parseInt(count[j].quantity)
+            }
+          }
+          medicineNames[index] = {
+            name: medicineNames[index],
+            quantity: medicineCount
+          }
+        }
+
+        console.log(medicineNames)
+
+        setQuantityData(medicineNames)
+      });
   }, []);
 
   async function saveData(e) {
@@ -66,8 +90,8 @@ function Index() {
 
   const [isSettingOpen, setIssSettingOpen] = useState(false);
   const [settingMethod, setSettingMethod] = useState("");
-  const [currentPassword,setCurrentPassword]=useState("");
-  const [newPassword,setNewPassword]=useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   return (
     <div>
       {" "}
@@ -90,9 +114,8 @@ function Index() {
             {settingMethod === "range" && (
               <form
                 onSubmit={saveData}
-                className={`flex flex-row w-4/5 mx-auto ${
-                  isSettingOpen ? "bg-white" : ""
-                } transition duration-500 p-4 rounded justify-between shadow-lg`}
+                className={`flex flex-row w-4/5 mx-auto ${isSettingOpen ? "bg-white" : ""
+                  } transition duration-500 p-4 rounded justify-between shadow-lg`}
               >
                 <label className="flex items-center space-x-2">
                   <p className="font-semibold text-gray-800">
@@ -129,9 +152,8 @@ function Index() {
             {settingMethod === "password" && (
               <form
                 onSubmit={saveData}
-                className={`flex flex-row w-4/5 mx-auto ${
-                  isSettingOpen ? "bg-white" : ""
-                } transition duration-500 p-4 rounded justify-between shadow-lg`}
+                className={`flex flex-row w-4/5 mx-auto ${isSettingOpen ? "bg-white" : ""
+                  } transition duration-500 p-4 rounded justify-between shadow-lg`}
               >
                 <label className="flex items-center space-x-2">
                   <p className="font-semibold text-gray-800">
@@ -182,6 +204,7 @@ function Index() {
                     <td className="py-1 px-2">#</td>
                     <td>Product Name</td>
                     <td>Expire Date</td>
+                    <td>Quantity</td>
                   </tr>
                 </thead>
                 <tbody className="divide-y-2 divide-gray-200">
@@ -192,6 +215,7 @@ function Index() {
                           <td className="py-1">{++i}</td>
                           <td>{el.name}</td>
                           <td>{el.expire_date}</td>
+                          <td>{el.quantity}</td>
                         </tr>
                       );
                     })}
@@ -207,7 +231,7 @@ function Index() {
                   <tr className="bg-blue-400 text-white shadow">
                     <td className="py-1 px-2">#</td>
                     <td>Product Name</td>
-                    <td>entry date</td>
+                    {/* <td>entry date</td> */}
                     <td>Quantity</td>
                   </tr>
                 </thead>
@@ -218,7 +242,7 @@ function Index() {
                         <tr key={i}>
                           <td className="py-1">{++i}</td>
                           <td>{el.name}</td>
-                          <td>{el.entry_date}</td>
+                          {/* <td>{el.entry_date}</td> */}
                           <td>{el.quantity}</td>
                         </tr>
                       );
