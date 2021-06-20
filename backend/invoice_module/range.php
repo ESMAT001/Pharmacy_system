@@ -10,7 +10,7 @@ include '../config.php';
 $data = json_decode(file_get_contents("php://input"), true);
 
 if ($data["method"] == "expire_date") {
-    $query = "SELECT p.expire_date as 'expire_date' ,mp.product_name as 'name' FROM `medicine_information_p` as p INNER JOIN `medicine_p` as mp on p.medicine_id = mp.medicine_id WHERE DATE(p.expire_date) <= DATE(DATE_ADD(now(), INTERVAL (select medicine_range_expire from `medicine_range_p`) MONTH))";
+    $query = "SELECT (p.packs_quantity-p.sold_quantity) as 'quantity', p.expire_date as 'expire_date' ,mp.product_name as 'name' FROM `medicine_information_p` as p INNER JOIN `medicine_p` as mp on p.medicine_id = mp.medicine_id WHERE DATE(p.expire_date) <= DATE(DATE_ADD(now(), INTERVAL (select medicine_range_expire from `medicine_range_p`) MONTH))";
     $result = $con->query($query);
     $resData = array();
     while ($row = $result->fetch_assoc()) {
