@@ -9,17 +9,12 @@ include "../config.php";
 
 $query = "SELECT * FROM `sample_distribution_p`";
 
-$result = $con->query($query);
-
-$array=array();
-if ($result->num_rows > 0) {
-    // output data of each row
-    while ($row = $result->fetch_assoc()) {
-        array_push($array,$row);
-    }
-    echo json_encode(array("status"=>true,"data"=>$array));
-} else {
-    echo json_encode(array("status"=>true));
+$select_sample=mysqli_query($con,$query);
+$list=array();
+foreach($select_sample as $se){
+    $list[]=$se;
 }
 
+echo json_encode($list)
 
+?>

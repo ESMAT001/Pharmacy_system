@@ -22,12 +22,46 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>Sehat-e-Zafran</title>
+
     <style>
         @media print {
             .no-print,
             .no-print * {
                 display: none !important;
+                font-size: 12px !important;
+            }
+            @page {
+                size: A4;
+                /* DIN A4 standard, Europe */
+                margin: 0 5px;
+            }
+            html,
+            body {
+                width: 210mm;
+                /* height: 297mm; */
+                height: 282mm;
+                font-size: 11px;
+                background: #FFF;
+                overflow: visible;
+            }
+            body {
+                padding-top: 15mm;
+            }
+            .padding-zero {
+                padding: 0;
+            }
+            .color_default {
+                color: black !important;
+            }
+            #addressdetails {
+                display: block !important;
+            }
+            #addressdetails h1 {
+                color: black;
+            }
+            .to-print-visible {
+                display: flex !important;
             }
         }
     </style>

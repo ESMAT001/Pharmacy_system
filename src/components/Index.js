@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import Navbar from "./navbar";
 import settingIcon from "../images/setting.svg";
 import axios from "axios";
-
+import BASE_URL from "./BASE_URL";
 function Index() {
   const history = useHistory();
   var email = sessionStorage.getItem("email");
@@ -18,7 +18,7 @@ function Index() {
   useEffect(() => {
     axios
       .post(
-        "http://localhost:8080/pharmacyproject/backend/invoice_module/medicine_range_p.php",
+        `${BASE_URL(document.location.origin)}/pharmacyproject/backend/invoice_module/medicine_range_p.php`,
         {
           method: "get",
         }
@@ -28,9 +28,14 @@ function Index() {
         setRangeQ(parseInt(res.data.data.medicine_range_quantity));
       });
 
+
+  }, []);
+
+  useEffect(() => {
+
     axios
       .post(
-        "http://localhost:8080/pharmacyproject/backend/invoice_module/range.php",
+        `${BASE_URL(document.location.origin)}/pharmacyproject/backend/invoice_module/range.php`,
         {
           method: "expire_date",
         }
@@ -38,7 +43,7 @@ function Index() {
       .then((res) => setExpireData(res.data.data));
     axios
       .post(
-        "http://localhost:8080/pharmacyproject/backend/invoice_module/range.php",
+        `${BASE_URL(document.location.origin)}/pharmacyproject/backend/invoice_module/range.php`,
         {
           method: "quantity",
         }
@@ -58,23 +63,29 @@ function Index() {
               medicineCount += parseInt(count[j].quantity)
             }
           }
-          medicineNames[index] = {
-            name: medicineNames[index],
-            quantity: medicineCount
+          if (medicineCount < rangeQ) {
+            medicineNames[index] = {
+              name: medicineNames[index],
+              quantity: medicineCount
+            }
+          } else {
+            medicineNames[index] = false
           }
+
         }
 
-        console.log(medicineNames)
 
         setQuantityData(medicineNames)
       });
-  }, []);
+  }, [rangeQ])
+
+
 
   async function saveData(e) {
     e.preventDefault();
     axios
       .post(
-        "http://localhost:8080/pharmacyproject/backend/invoice_module/medicine_range_p.php",
+        `${BASE_URL(document.location.origin)}/pharmacyproject/backend/invoice_module/medicine_range_p.php`,
         {
           method: "set",
           data: {
@@ -108,7 +119,6 @@ function Index() {
               >
                 <option>Select settings</option>
                 <option value="range">Range settings</option>
-                <option value="password">Password settings</option>
               </select>
             )}
             {settingMethod === "range" && (
@@ -238,14 +248,16 @@ function Index() {
                 <tbody className="divide-y-2 divide-gray-200">
                   {quantityData.length &&
                     quantityData.map((el, i) => {
-                      return (
-                        <tr key={i}>
-                          <td className="py-1">{++i}</td>
-                          <td>{el.name}</td>
-                          {/* <td>{el.entry_date}</td> */}
-                          <td>{el.quantity}</td>
-                        </tr>
-                      );
+                      if (el) {
+                        return (
+                          <tr key={i}>
+                            <td className="py-1">{++i}</td>
+                            <td>{el.name}</td>
+                            {/* <td>{el.entry_date}</td> */}
+                            <td>{el.quantity}</td>
+                          </tr>
+                        );
+                      }
                     })}
                 </tbody>
               </table>

@@ -8,7 +8,7 @@ header('Access-Control-Allow-Headers:Access-Control-Allow-Header,Content-Type,Ac
 include '../config.php';
 
 
-$query= "SELECT i.invoice_id, i.book_page_no, i.total_amount,i.invoice_date,i.user_id,c.customer_name,c.province,v.name,v.last_name FROM `invoice_p` as i INNER JOIN customer_p as c ON i.customer_id=c.customer_id INNER JOIN visitor_p as v on v.visitor_id= i.visitor_id ORDER BY i.invoice_date";
+$query= "select *,province.province_name as real_province,floor(sum(invoice_medicine_list_p.pack_quantity*(invoice_medicine_list_p.sell_price-((invoice_medicine_list_p.sell_price*invoice_medicine_list_p.discount)/100)))) as total from invoice_p INNER join invoice_medicine_list_p on invoice_p.invoice_id=invoice_medicine_list_p.invoice_id INNER join customer_p on customer_p.customer_id=invoice_p.customer_id INNER join visitor_p on visitor_p.visitor_id=invoice_p.visitor_id INNER join province on province.province_id=customer_p.province_id group by invoice_p.invoice_id desc";
 
 $result = $con->query($query);
 $data=array();

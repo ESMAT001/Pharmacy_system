@@ -10,6 +10,9 @@ $customer_name=$userData['customerName'];
 $address=$userData['address'];
 $phone_no=intval($userData['phone']);
 $province=$userData['province'];
+$customer_book_page=$userData['customerBookPage'];
+
+
 
 include "../config.php";
 if(!empty($customer_name)){
@@ -21,9 +24,11 @@ if($con->query($sql)===TRUE){
     foreach($res as $r){
         $customer_id=$r['customer_id'];
     }
+    $insert_in_book="insert into customer_book_page VALUES(null,'$customer_book_page','$customer_id')";
+    if($con->query($insert_in_book)===TRUE){
     $response=array("status"=>"true",'id'=>$customer_id);
     echo json_encode($response);
-    
+    }
 }else{
     $response=array("status"=>"false");
     echo json_encode($response);

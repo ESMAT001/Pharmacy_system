@@ -5,7 +5,7 @@ import axios from "axios";
 import SampleDistributionInfo from "./SampleDistributionInfo";
 import Modal from "react-modal";
 import logo from "../../images/logo.png";
-
+import BASE_URL from "../BASE_URL";
 function NameOfJsFile() {
   const history = useHistory();
   var email = sessionStorage.getItem("email");
@@ -16,25 +16,19 @@ function NameOfJsFile() {
   const [sampleDistributionData, setSampleDistributionData] = useState([]);
   const [copyData, setCopyData] = useState([]);
   const [loadAll, setLoadAll] = useState(false);
-  async function fetchData() {
-    let data = await fetch(
-      "http://localhost:8080/pharmacyproject/backend/sample_distribution_module/get_all_sample_distribution.php"
-    );
-    data = await data.json();
-    if (data.status) {
-      //console.log(data.data);
-      setSampleDistributionData(data.data);
-      setCopyData(data.data);
-    }
+  
+ 
+useEffect(() => {
+  axios.get(`${BASE_URL(document.location.origin)}/pharmacyproject/backend/invoice_module/get_all_sample_distribution.php`)
+  .then(response=>{
+    setSampleDistributionData(response.data)
+    setCopyData(response.data)
+  })
+  return () => {
+    
   }
-  useEffect(() => {
-    fetchData();
-  }, []);
-  useEffect(() => {
-    //console.log("loading all");
-    fn(fetchData);
-  }, [loadAll]);
-  //search section
+}, [])
+
 
   const [productNames, setProductNames] = useState({});
 
@@ -46,7 +40,6 @@ function NameOfJsFile() {
     const val = productNames["notFOUNDEDEDED"];
     let arr = copyData.filter((el, i) => {
       if (searchMethod === "name") {
-        //console.log(el["medicine_id"], val, i);
         return parseInt(el["medicine_id"]) === val;
       } else if (searchMethod === "dis_date") {
         return el["dis_date"] === "noDAte";

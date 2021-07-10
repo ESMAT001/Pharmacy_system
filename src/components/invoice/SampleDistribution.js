@@ -3,13 +3,14 @@ import Navbar from "../navbar";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import Modal from "react-modal";
-
+import BASE_URL from "../BASE_URL";
 function SampleDistribution() {
   const history = useHistory();
   var email = sessionStorage.getItem("email");
   if (email == null) {
     history.push("/login");
   }
+  const [MedicineListForSell, setMedicineListForSell] = useState([])
 
   const [medicineName, setMedicineName] = useState("");
   const [medicineId, setMedicineId] = useState("");
@@ -22,39 +23,28 @@ function SampleDistribution() {
   const [costPriceValue, setCostPriceValue] = useState("");
   const [description, setDescription] = useState("");
   const [modalData, setModalData] = useState([]);
-
+  const [ProductNameAfterAdd, setProductNameAfterAdd] = useState("")
+  const [MedicineIdAfterAdd, setMedicineIdAfterAdd] = useState(0)
   useEffect(() => {
-    const fetchData = async () => {
-      let data = await fetch(
-        "http://localhost:8080/pharmacyproject/backend/sample_distribution_module/add_to_previous_medicine.php"
-      );
-      data = await data.json();
-      console.log(data);
-      const arr = [];
-
-      for (const key in data) {
-        arr.push({
-          id: key,
-          medicineName: data[key],
-        });
-      }
-      console.log(arr);
-      setMedicineList(arr);
-    };
-    fetchData();
+    axios.get(
+      `${BASE_URL(document.location.origin)}/pharmacyproject/backend/medicine_module/add_to_previous_medicine.php`
+    )
+    .then(response=>{
+      setMedicineListForSell(response.data)
+    })
+    
   }, []);
 
   useEffect(() => {
     axios
       .post(
-        "http://localhost:8080/pharmacyproject/backend/sample_distribution_module/findQunatityOFMedicine.php",
+        `${BASE_URL(document.location.origin)}/pharmacyproject/backend/sample_distribution_module/findQunatityOFMedicine.php`,
         { medicineId }
       )
       .then((res) => setMedicineQuantityText(res.data.remain));
   }, [medicineId]);
 
   useEffect(() => {
-    console.log("cost", costPrice, medicineQuantity);
     if (medicineQuantity && costPrice)
       setCostPriceValue(parseInt(costPrice) * parseInt(medicineQuantity));
   }, [costPrice, medicineQuantity]);
@@ -63,7 +53,7 @@ function SampleDistribution() {
     if (medicineId !== "") {
       axios
         .post(
-          "http://localhost:8080/pharmacyproject/backend/sample_distribution_module/cost_price_of_a_specific_medicine.php",
+          `${BASE_URL(document.location.origin)}/pharmacyproject/backend/sample_distribution_module/cost_price_of_a_specific_medicine.php`,
           medicineId.split("|")[0]
         )
         .then((res) => {
@@ -79,11 +69,11 @@ function SampleDistribution() {
 
   function handleAddClick(e) {
     e.preventDefault();
-    const medInfo = medicineId.split("|");
+    
     const newDataObj = {
       description,
-      medicine_name: medInfo[1],
-      medicine_id: medInfo[0],
+      medicine_name:ProductNameAfterAdd,
+      medicine_id: MedicineIdAfterAdd,
       quantity: medicineQuantity,
       finalPrice: costPriceValue,
     };
@@ -95,18 +85,14 @@ function SampleDistribution() {
   }
 
   async function saveData() {
-    console.log(data);
     axios
       .post(
-        "http://localhost:8080/pharmacyproject/backend/sample_distribution_module/add_sample_distribution.php",
+        `${BASE_URL(document.location.origin)}/pharmacyproject/backend/sample_distribution_module/add_sample_distribution.php`,
         data
       )
       .then((res) => {
-        console.log("response");
-        console.log(res.data);
         if (res.data.status && res.data.modal) {
           const medData = res.data.data;
-          console.log(medData);
           remainAmount = medData;
           const medicineIds = [];
           for (let i = 0; i < medData.length; i++) {
@@ -133,22 +119,18 @@ function SampleDistribution() {
   }, [modalData]);
 
   async function getSpecificMedicineInfo(medicineIds) {
-    console.log(medicineIds);
     axios
       .post(
-        "http://localhost:8080/pharmacyproject/backend/sample_distribution_module/get_specific_medicine_info.php",
+        `${BASE_URL(document.location.origin)}/pharmacyproject/backend/sample_distribution_module/get_specific_medicine_info.php`,
         medicineIds
       )
       .then((res) => {
         // console.log(res.data);
         if (res.data.status) {
           const data = res.data.data;
-          console.log(data);
-          console.log(remainAmount);
           const newData = [];
           for (let i = 0; i < data.length; i++) {
             if (data[i].medicine_id == remainAmount[i].medicine_id) {
-              console.log("cuptured");
               newData.push({
                 medicine_id: data[i].medicine_id,
                 product_name: data[i].product_name,
@@ -156,7 +138,6 @@ function SampleDistribution() {
               });
             }
           }
-          console.log(newData);
           setModalData([...newData]);
         }
       });
@@ -182,9 +163,26 @@ function SampleDistribution() {
     },
   };
 
+
+
+const medicineHandler=(medicineId)=>{
+  setMedicineId(medicineId)
+
+  const filteredMedicine=MedicineListForSell.filter(mo=>mo.medicine_id.includes(medicineId))
+  setMedicneDetails(filteredMedicine)
+
+
+}
+async function setMedicneDetails(list){
+list.map(list=>{
+  setProductNameAfterAdd(list.product_name)
+  setMedicineIdAfterAdd(list.medicine_id)
+})
+}
   return (
     <div>
-      {" "}
+      {document.getElementById("body").classList.add("bg-blue-500")} 
+      
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -229,29 +227,28 @@ function SampleDistribution() {
           </tbody>
         </table>
       </Modal>
-      {document.getElementById("body").classList.add("bg-blue-500")} <Navbar />
+      <Navbar />
       <div className="py-16 flex justify-center">
         <div className="p-2 bg-white shadow-lg rounded-lg w-7/12 flex flex-col justify-center">
           <form className="flex flex-col mt-3">
             <div className="flex flex-row justify-evenly items-center w-full">
-              <select
-                className="p-1 focus:outline-none border-2 border-blue-300 rounded-md   "
-                required={true}
-                value={medicineId}
-                onChange={(e) => {
-                  console.log(e.target.value);
-                  return setMedicineId(e.target.value);
-                }}
-              >
-                <option> select medicine </option>
-                {medicineList.map((el) => (
-                  <option value={el.id + "|" + el.medicineName}>
-                    {el.medicineName}
-                  </option>
-                ))}
-              </select>
+            <select
+                  id="medicineName"
+                  onChange={(e)=>medicineHandler(e.target.value)}
+                  className="p-1 mx-1 focus:outline-none border-2 border-blue-300 rounded-md  w-54 mb-3"
+                  required
+                >
+
+                  <option value="">Select One Medicine</option>
+                  {
+                    MedicineListForSell.length >0 && MedicineListForSell.map(list=>(
+                      <option key={list.medicine_id} value={list.medicine_id}>{list.product_name}</option>
+                      ))
+                  }
+
+                </select>
               <label className="">
-                Available Amount {medicineQuantityText}
+                Available Quantity In Stock: <span className="font-bold">{medicineQuantityText}</span>
               </label>
               <input
                 type="text"

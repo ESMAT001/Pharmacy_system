@@ -4,6 +4,7 @@ import Navbar from "./navbar"
 import FormInput from "./FormInput";
 import SubmitBtn from "./SubmitBtn";
 import axios from 'axios';
+import BASE_URL from "./BASE_URL";
 
 
 
@@ -30,15 +31,14 @@ function AddNewMedicine() {
         formData.append("perPack",perPack);
         formData.append("costPrice",costPrice)
         var dataJson=Object.fromEntries(formData);
-        axios.post("http://localhost:8080/pharmacyproject/backend/medicine_module/add_medicine.php",dataJson)
+        axios.post(`${BASE_URL(document.location.origin)}/pharmacyproject/backend/medicine_module/add_medicine.php`,dataJson)
         .then(res=>{
             return res.data
             
         }).then(res=>{
            JSON.stringify(res)
             if(res.status==="true"){
-                console.log(res);
-                history.push("/")
+                history.push("/stockRoomView")
             }else{
                 console.log(res);
                 

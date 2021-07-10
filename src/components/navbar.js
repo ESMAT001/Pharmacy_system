@@ -1,5 +1,6 @@
 import React from 'react'
 import {useHistory} from "react-router-dom";
+
 var menuTransform=false;
 
 const menuCheckTransform=()=>{
@@ -33,6 +34,22 @@ const invoiceDisplay=()=>{
 
     }
 }
+
+var provinceDisplayStatus=false;
+const provinceSectionDisplay=()=>{
+    if(provinceDisplayStatus===false){
+        document.getElementById("provinceSectionSubMenu").classList.remove("hidden");
+        provinceDisplayStatus=true;
+
+    }else{
+        document.getElementById("provinceSectionSubMenu").classList.add("hidden");
+        provinceDisplayStatus=false;
+
+    }
+}
+
+
+
 
 var medicineDisplayStatus=false;
 const medicineDisplay=()=>{
@@ -85,6 +102,20 @@ if(ledgerDisplayStatus===false){
     ledgerDisplayStatus=false;
 }
 }
+
+var customerPreviousDisplay=false;
+
+const customerPrevious=()=>{
+    if(customerPreviousDisplay===false){
+        document.getElementById("customerPreviousSection").classList.remove("hidden");
+        customerPreviousDisplay=true;
+    }else{
+        document.getElementById("customerPreviousSection").classList.add("hidden");
+        customerPreviousDisplay=false;
+    }
+}
+
+
 var financeDisplayStatus=false;
 const financeDisplay=()=>{
 if(financeDisplayStatus===false){
@@ -95,6 +126,27 @@ if(financeDisplayStatus===false){
     financeDisplayStatus=false;
 }
 }
+
+var saleDisplay=false;
+const saleDisplayFuncion=()=>{
+if(saleDisplay===false){
+    document.getElementById("saleSection").classList.remove("hidden");
+    saleDisplay=true;
+}else{
+    document.getElementById("saleSection").classList.add("hidden");
+    saleDisplay=false;
+}
+}
+
+
+
+
+
+
+
+
+
+
 var backupDisplayStatus=false;
 const backupDisplay=()=>{
     
@@ -109,12 +161,18 @@ if(backupDisplayStatus===false){
 
 function Navbar() {
     const history =useHistory();
+
+    const logoutHandler=()=>{
+        
+        sessionStorage.setItem("email","")
+        history.push("/login")
+    }
     return (
-        <div >
+        <div className="no-print">
          <div className="w-full h-12 bg-gray-900 shadow-lg  fixed z-10">
          <div className="flex flex-row justify-between mx-4 mt-1 items-center">
            <div>
-                   <div id="" className="cursor-pointer  rounded-md" onClick={displayMenu}>
+                   <div id="" className="cursor-pointer border border-white rounded-md" onClick={displayMenu}>
                    <div className="burger-icon " id="burger-icon">
                         <div className="icon"></div>
                         <div className="icon"></div>
@@ -123,34 +181,57 @@ function Navbar() {
                    </div>
             </div>
             <div className="logout">
-                <h1 className="text-white text-md"><div className="cursor-pointer">Logout</div></h1>
+                <h1 className="text-white text-md"><div className="cursor-pointer font-bold" onClick={logoutHandler}>Logout</div></h1>
             </div>
            </div>
 
 
          </div>
 
-            <div className="w-60 p-3 h-full bg-gray-600 text-white absolute mt-12 z=0  -left-3/4 transition duration-100" id="aside-menu">
+            <div className="w-60 p-3 h-full bg-red-200 fixed mt-12 z=0  -left-3/4 " id="aside-menu">
                 <table>
                 <div onClick={()=>history.push("/")}>
                     <h1 className="text-md cursor-pointer font-bold" >Home Page</h1>
                 </div>
 
 {/* Start of Invoice Section */}
-                    <div className=" cursor-pointer" id="invoiceSection" onClick={invoiceDisplay}>
+     <div className=" cursor-pointer" id="invoiceSection" onClick={invoiceDisplay}>
                     <tr>
                         <th><div >Invoice Section <span className=" ml-2 arrow arrow-down"></span></div></th>
                         
                     </tr>
                     </div>
                     <div className="hidden" id="invoiceSubMenu">
-
-                        <tr><div className="cursor-pointer pl-4" onClick={()=>history.push("/addnewinvoice")}>Add New Invoice</div></tr>
-                        <tr><div className="cursor-pointer pl-4" onClick={()=>history.push("/invoiceList")}>Invoice List</div></tr>
-                        <tr><div className="cursor-pointer pl-4" onClick={()=>history.push("/sampleDistribution")}>Sample Distrubution</div></tr>
-                        <tr><div className="cursor-pointer pl-4" onClick={()=>history.push("/sampleDistributionList")}>Sample Distribution List</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/addnewinvoice")}>Add New Invoice</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/addsuplier")}>Add Supplier For Delivery</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/invoiceList")}>Invoice List</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/sampleDistribution")}>Sample Distrubution</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/sampleDistributionList")}>Sample Distribution List</div></tr>
                     </div>
          {/* End of Invoice Section */}
+
+
+         {/* Start Of Province Section */}
+
+         <div className=" cursor-pointer" id="provinceSection" onClick={provinceSectionDisplay}>
+                    <tr>
+                        <th><div >Province Section <span className=" ml-2 arrow arrow-down"></span></div></th>
+                        
+                    </tr>
+                    </div>
+                    <div className="hidden" id="provinceSectionSubMenu">
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>{history.push("/addinvoiceforprovince")}}>Add Invoice for Province</div></tr>
+
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>{history.push("/invoicelistofprovince")}}>Invoice List</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>{history.push("/addnewprovince")}}>Add New Province</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>{history.push("/provincelist")}}>Province List</div></tr>
+
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>{history.push("/provincemedicineselllist")}} >Province Medicine Sell Price</div></tr>
+                        
+                    </div>
+
+
+         {/* End of Province Section */}
 
 {/* Medicine Secion */}
 
@@ -161,8 +242,12 @@ function Navbar() {
                     </tr>
                     </div>
                     <div className="hidden" id="medicineMenu">
-                        <tr><div className="cursor-pointer pl-4" onClick={()=>{history.push("/addnewmedicine")}}>Add New Medicine</div></tr>
-                        <tr><div className="cursor-pointer pl-4" onClick={()=>{history.push("/addtopreviousmedicine")}}>Add to Previous Medicine</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>{history.push("/addnewmedicine")}}>Add New Medicine</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>{history.push("/addtopreviousmedicine")}}>Add to Previous Medicine</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>{history.push("/addsalepriceformedicine")}}>Add Sale Price For Medicine</div></tr>
+                    
+                    
+                    
                     </div>
 {/* End of Medicne Secion */}
 
@@ -177,8 +262,8 @@ function Navbar() {
                     </tr>
                     </div>
                     <div className="hidden" id="visitorSection">
-                        <tr><div className="cursor-pointer pl-4" onClick={()=>history.push("/addvisitor")}>Add Visitor</div></tr>
-                        <tr><div className="cursor-pointer pl-4" onClick={()=>history.push("/visitorlist")}>Visitor List</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/addvisitor")}>Add Visitor</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/visitorlist")}>Visitor List</div></tr>
                     </div>
 
 
@@ -195,14 +280,51 @@ function Navbar() {
                         <th><div >Customer Section <span className=" ml-2 arrow arrow-down"></span></div></th>
                         
                     </tr>
-                    </div>
+</div>
                     <div className="hidden" id="customerSection">
-                        <tr><div className="cursor-pointer pl-4">Customer List</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/addnewcustomer")}>Add New Customer</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/customerList")}>Customer List</div></tr>
+                    
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/customerInvoicelistforprint")}>Customer Invoices For Print</div></tr>
+                    
                     </div>
 
 
 
 {/* End of Customer Section */}
+
+
+{/* Customer Previous Database */}
+
+<div className=" cursor-pointer" id="customerPrevious" onClick={customerPrevious}>
+            <tr>
+        <th><div >Customer Previous  <span className=" ml-2 arrow arrow-down"></span></div></th>
+                        
+                    </tr>
+
+
+                <div className="hidden" id="customerPreviousSection">
+                     <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4 " onClick={()=>history.push("/addtopreviousaccount")}>Add To Previous Balance Of Customer </div></tr>
+                    <tr><div className="cursor-pointer pl-4" onClick={()=>history.push("/addtopreviousaccountlist")}>List of Customer Previous Balance </div></tr>
+                    
+
+                     <tr className="hover:text-blue-900">
+                    <div className="cursor-pointer pl-4" onClick={()=>history.push("/ograyireciptlist")}>Ograyi Recipt List Pr</div>
+                     </tr>
+                     <tr className="hover:text-blue-900">
+                    <div className="cursor-pointer pl-4" onClick={()=>history.push("/ograyiReciptListForPrintPrevious")}>Ograyi Recipt List for Print</div>
+                     </tr>
+
+        </div>
+</div>
+        
+
+
+
+
+
+
+{/* End Of Customer Previous Database */}
 
 
 
@@ -214,9 +336,11 @@ function Navbar() {
                     </tr>
                     </div>
                     <div className="hidden" id="stockSection">
-                        <tr><div className="cursor-pointer pl-4">Stock Room View</div></tr>
-                        <tr><div className="cursor-pointer pl-4">Add Medicine to Loose Stock</div></tr>
-                        <tr><div className="cursor-pointer pl-4">Loose Stock List</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/stockRoomView")}>Stock Room View</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/addtoloosestock")}>Add to Loose Stock</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/looseStockList")}>Loose Stock List</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/expiredmedicinelist")}>Expired Medicine List</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/returnmedicinelist")}>Return Medicine List</div></tr>
                     </div>
 
 {/* End of  Stock Section */}
@@ -231,8 +355,13 @@ function Navbar() {
                     </tr>
                     </div>
                     <div className="hidden" id="ledgerSection">
-                        <tr><div className="cursor-pointer pl-4">Ledger</div></tr>
-                        <tr><div className="cursor-pointer pl-4">Ledger Recipt</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/ledger")}>Ledger</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/ledgerRecipt")}>Ograyi Recipt</div></tr>
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/ledgerReciptList")}>Ograyi Recipt List</div></tr>
+
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/totalcustomerograyi")}>Total Customer Ograyi</div></tr>
+
+                        <tr className="hover:text-blue-900"><div className="cursor-pointer pl-4" onClick={()=>history.push("/totalvisitorograyi")}>Total Visitor Ograyi</div></tr>
                     </div>
 
 {/* End of Ledger Section */}
@@ -245,11 +374,38 @@ function Navbar() {
                     </tr>
                     </div>
                     <div className="hidden" id="financeSection">
-                        <tr><div className="cursor-pointer pl-4">Finance Section</div></tr>
-                        <tr><div className="cursor-pointer pl-4">Add Expense</div></tr>
+                        <tr className="hover:text-blue-800"><div className="cursor-pointer pl-4" onClick={()=>history.push("/financePage")}>Finance Section</div></tr>
+                        <tr className="hover:text-blue-800"><div className="cursor-pointer pl-4" onClick={()=>history.push("/addExpense")}>Add Expense</div></tr>
+                        <tr className="hover:text-blue-800"><div className="cursor-pointer pl-4" onClick={()=>history.push("/expenseList")}>Expense List</div></tr>
+                    
+                        <tr className="hover:text-blue-800"><div className="cursor-pointer pl-4" onClick={()=>history.push("/invoicewithprofit")}>Customers Invoices With Profit</div></tr>
+                        <tr className="hover:text-blue-800"><div className="cursor-pointer pl-4 text-sm " onClick={()=>history.push("/provinceinvoicewithprofit")}>Province Customers Invoices with Profits</div></tr>
                     </div>
 
 {/* End of finance Section */}
+
+
+{/* Sales Section Start */}
+
+<div className=" cursor-pointer" id="saleSubMenu" onClick={saleDisplayFuncion}>
+                    <tr>
+                        <th><div >Sales Section <span className=" ml-2 arrow arrow-down"></span></div></th>
+                        
+                    </tr>
+                    </div>
+                    <div className="hidden" id="saleSection">
+                        <tr className="hover:text-blue-800"><div className="cursor-pointer pl-4" onClick={()=>history.push("/salebymedicine")}>Sales By Medicine</div></tr>
+                        <tr className="hover:text-blue-800"><div className="cursor-pointer pl-4" onClick={()=>history.push("/salebyvisitor")}>Sales By Visitor</div></tr>
+                        <tr className="hover:text-blue-800"><div className="cursor-pointer pl-4" onClick={()=>history.push("/salebycustomer")}>Sales By Customer</div></tr>
+                        <tr className="hover:text-blue-800"><div className="cursor-pointer pl-4" onClick={()=>history.push("/salesbyprovincemedicine")}>Sales By Province Medicine</div></tr>
+                        <tr className="hover:text-blue-800"><div className="cursor-pointer pl-4" onClick={()=>history.push("/customerbyprovincesales")}>Sales by Customer Province</div></tr>
+                    
+                    </div>
+
+
+
+
+{/* End of Sale Section */}
 
 {/* Back up section */}
 
@@ -260,10 +416,20 @@ function Navbar() {
                     </tr>
                     </div>
                     <div className="hidden" id="backupSection">
-                        <tr><div className="cursor-pointer pl-4">Back Up </div></tr>
+                        <tr className="hover:text-blue-800"><div className="cursor-pointer pl-4"onClick={()=>history.push("/backup")}>Back Up </div></tr>
                     </div>
 
 {/* End of Back up section */}
+{/* User Creation */}
+<div className=" cursor-pointer" onClick={()=>history.push("/users")}>
+
+<tr className="hover:text-blue-800">
+    <th><div >Users Settings <span className=""></span></div></th>
+                        
+                    </tr>
+</div>
+
+{/* End of User Creation */}
 
 
 

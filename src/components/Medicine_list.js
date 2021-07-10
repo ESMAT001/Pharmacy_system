@@ -12,12 +12,11 @@ function MedicineList() {
     }
     const [allData, setAllData] = useState("");
     useEffect(() => {
-        axios.get("http://localhost:8080/pharmacyproject/backend/medicine_module/dislay_all_medicine.php")
+        axios.get(`${BASE_URL(document.location.origin)}/pharmacyproject/backend/medicine_module/dislay_all_medicine.php`)
         .then(res=>{
            return res.data
         })
         .then(res=>{
-           console.log(res);
            var allData=retriveData(res);
            document.getElementById("allDataDisplay").innerHTML=allData
         })

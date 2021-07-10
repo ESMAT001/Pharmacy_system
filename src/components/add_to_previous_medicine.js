@@ -4,41 +4,26 @@ import {useHistory} from "react-router-dom";
 import axios from 'axios';
 import FormInput from "./FormInput";
 import SubmitBtn from "./SubmitBtn";
+import BASE_URL from "./BASE_URL";
+
+
 function AddToPreviousMedicine() {
     const history=useHistory();
     var email=sessionStorage.getItem("email");
     if(email==null){
         history.push("/login")
     }
-    const [data, setData] = useState("");
-
+const [MedicineListForSelect, setMedicineListForSelect] = useState([])
     useEffect(() => {
-        fetchData()
+        axios.get(`${BASE_URL(document.location.origin)}/pharmacyproject/backend/medicine_module/add_to_previous_medicine.php`)
+        .then(response=>{
+            setMedicineListForSelect(response.data)
+        })
+        
         
     }, [])
-    async function fetchData(){
-        const dataFromApi=await axios.get("http://localhost:8080/pharmacyproject/backend/medicine_module/add_to_previous_medicine.php");
-        const dataTaken=await dataFromApi.data;
-        const convertingDataToJson=dataTaken;
-        
-       const medicineInOne= await  makeOptionForSelect([convertingDataToJson]);
-       document.getElementById("selectMedicine").innerHTML=medicineInOne;
-    }
-    async function DataSet(data){
-        setData(data)
-    }
   
-    async function makeOptionForSelect(data){
-        
-        var output="";
-        data.map(element=>{
-            output+="<option value=''>Select One Medicine</option>"
-            for(let key in element){
-                output+=`<option value=${key}>${element[key]}</option>`
-            }
-        })
-        return output
-    }
+
 
 const [selectInput, setSelectInput] = useState("")
 const [batchNo, setBatchNo] = useState("")
@@ -84,10 +69,10 @@ const selectHandler=(e)=>{
         formData.append("packQuantity",packQuantity);
         formData.append("perPack",perPack);
         var jsonData=JSON.stringify(Object.fromEntries(formData));
-        axios.post("http://localhost:8080/pharmacyproject/backend/medicine_module/inst_add_to_previous_handler.php",jsonData)
+        axios.post(`${BASE_URL(document.location.origin)}/pharmacyproject/backend/medicine_module/inst_add_to_previous_handler.php`,jsonData)
         .then(res=>{
             if(res.data.status==="true"){
-                history.push("/")
+                history.push("/stockRoomView")
             }else{
                 console.log(res.data);
             }
@@ -108,8 +93,13 @@ const selectHandler=(e)=>{
             <div className="p-16 flex justify-center">
             <div className="p-5 bg-white rounded-md shadow-xl">
                 <form onSubmit={formHandlerSubmit} >
-                    <select onChange={selectHandler}  className="p-1 focus:outline-none border-2 border-blue-300 rounded-md  w-64 mb-3" id="selectMedicine"  required>
-                        
+                    <select onChange={selectHandler}  className="p-1 focus:outline-none border-2 border-blue-300 rounded-md  w-64 mb-3"   required>
+                        <option value="">Select One Medicine</option>
+                        {
+                            MedicineListForSelect.length > 0 && MedicineListForSelect.map(list=>(
+                                <option value={list.medicine_id}>{list.product_name}</option>
+                            ))
+                        }
                     </select>
                     <div className>
                         <FormInput type="text" handler={batchNoHandler} placeHolder="Batch No" style="p-1 focus:outline-none border-2 border-blue-300 rounded-md  w-64 mb-3" />

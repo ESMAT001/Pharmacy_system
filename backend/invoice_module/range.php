@@ -18,7 +18,10 @@ if ($data["method"] == "expire_date") {
     }
     echo json_encode(array("data" => $resData));
 } else if ($data["method"] == "quantity") {
-    $query = "SELECT (p.packs_quantity-p.sold_quantity) as 'quantity',p.entry_date as 'entry_date' , mp.product_name as 'name' FROM `medicine_information_p` as p INNER JOIN medicine_p as mp ON p.medicine_id=mp.medicine_id WHERE (p.packs_quantity-p.sold_quantity)<(select medicine_range_quantity from `medicine_range_p`)";
+    $query = "SELECT (p.packs_quantity-p.sold_quantity) as 'quantity',p.entry_date as 'entry_date' , mp.product_name as 'name' FROM `medicine_information_p` as p INNER JOIN medicine_p as mp ON p.medicine_id=mp.medicine_id ";
+
+    // WHERE (p.packs_quantity-p.sold_quantity)<(select medicine_range_quantity from `medicine_range_p`)
+
     $result = $con->query($query);
     $resData = array();
     while ($row = $result->fetch_assoc()) {
@@ -26,3 +29,8 @@ if ($data["method"] == "expire_date") {
     }
     echo json_encode(array("data" => $resData));
 }
+
+
+
+
+?>

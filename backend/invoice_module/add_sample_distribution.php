@@ -81,7 +81,7 @@ for ($i = 0; $i < count($data); $i++) {
 
 
 
-        $newQuery = "SELECT packs_quantity , sold_quantity, medicine_info_id FROM medicine_information_p WHERE medicine_id='$medicineId' AND status='added' ORDER BY `medicine_info_id` ASC ";
+        $newQuery = "SELECT packs_quantity , sold_quantity, max(medicine_info_id) FROM medicine_information_p WHERE medicine_id='$medicineId' group by batch_no";
         $result = $con->query($newQuery);
         // echo json_encode($con->error);
         $medInfoId = "";
